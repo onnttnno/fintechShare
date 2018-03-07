@@ -1,0 +1,26 @@
+{
+  "name": "fintech",
+  "version": "1.0.0",
+  "description": "final project Software engr",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onnttnno/fintechShare.git"
+  },
+  "author": "Ritthirong Phoomanee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/onnttnno/fintechShare/issues"
+  },
+  "homepage": "https://github.com/onnttnno/fintechShare#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "mongoose": "^5.0.9",
+    "node-jose": "^0.11.0"
+  },
+  "devDependencies": {}
+}
