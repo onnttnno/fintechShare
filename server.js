@@ -2,6 +2,8 @@ var express = require('express');
 var app = express();
 const mongoose = require('mongoose');
 var jose = require('node-jose');
+var https = require('https');
+
 var keystore = jose.JWK.createKeyStore();
 
 //mongo lib
@@ -43,12 +45,12 @@ then(function (result) {
     console.log(result);
 });
 
-
+app.get('/', (req, res) => res.send('connection completed!'))
 
 //public key
-app.get('/getPublicJey', function (req, res) {
+app.get('/getPublicKey', function (req, res) {
     key = keystore.get('ServerKey');
-    res.send(key.toPEM());
+    res.send(key.toJSON());
 });
 
 //hand shake
@@ -63,48 +65,36 @@ app.get('/handShake/:cypher', function (req, res) {
         // *  key: Key used to decrypt
         // *  payload: Buffer of the decrypted content
         // *  plaintext: Buffer of the decrypted content (alternate)
-        keystore.add(result.pK, "pem").
-        then(function (result) {
+        jose.JWK.asKey(result.pK).
+        then(function (r) {
             // {result} is a jose.JWK.Key
-            console.log('save key complete');
-        });
+            // {result.keystore} is a unique jose.JWK.KeyStore
+            keystore.add(r).
+            then(function (re) {
+                // {result} is a jose.JWK.Key
+                //key = result;
+                API.find({
+                    api: result.api
+                }, function (err, data) {
+                    if (err) {
+                        console.log(err);
+                        res.send(err);
+                    } else {
+                        console.log(data);
+                        jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
+                        update(data).
+                        final().
+                        then(function (cy) {
+                            // {result} is a JSON Object -- JWE using the JSON General Serialization
+                            console.info("cypher"+cy);
+                            res.send(cy);
+                        });
+                    }
 
-        var shareOBJ = new API({
-            "api": result.api,
-            "tokens": result.token
-        });
-
-        shareOBJ.save(function (err, r) {
-            if (err) {
-                res.send('API error');
-            } else {
-                var data = 'save complete' + r;
-                jose.JWE.createEncrypt(keystore.get(ServiceKeys)).
-                update(data).
-                final().
-                then(function (result) {
-                    // {result} is a JSON Object -- JWE using the JSON General Serialization
-                    res.send(result);
                 });
 
-            }
+            });
         });
-        API.find({
-            api: result.api
-        }, function (err, data) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(data);
-            }
-
-        });
-
-
-
-
-
-        res.send('save complete');
     });
 });
 
@@ -167,8 +157,7 @@ app.get('/load/:cypher', function (req, res) {
         });
     });
 });
-app.listen(3000);
-
+app.listen(3000, () => console.log('Example app listening on port 3000!'));
 
 
 function guid() {
