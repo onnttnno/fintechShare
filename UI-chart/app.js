@@ -1,10 +1,10 @@
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
-const faker = require('faker');
+//const faker = require('faker');
 const port = process.env.PORT || 3000;
 const jsonToCsv = require('convert-json-to-csv');
-const assert = require('assert');
+//const assert = require('assert');
 const mongo = require('mongodb');
 const url = "mongodb://localhost:27017/";
 const bodyParser = require('body-parser');

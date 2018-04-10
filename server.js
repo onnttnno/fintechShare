@@ -1,12 +1,53 @@
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
 const mongoose = require('mongoose');
-var jose = require('node-jose');
+const jose = require('node-jose');
 var https = require('https');
-
+const server = require('http').createServer(app);
+const serverHttps=https.createServer(app);
 var keystore = jose.JWK.createKeyStore();
-
+const bodyParser = require('body-parser');
+const path = require('path');
+const port = process.env.PORT || 3000;
 //mongo lib
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+// PTT model
+const PTT = require('./UI-chart/models/stockPTT');
+require('./UI-chart/libs/db-connection');
+
+// CPALL model
+const CPALL = require('./UI-chart/models/stockCPALL');
+require('./UI-chart/libs/db-connection');
+
+// DTAC model
+const DTAC = require('./UI-chart/models/stockDTAC');
+require('./UI-chart/libs/db-connection');
+
+// AOT model
+const AOT = require('./UI-chart/models/stockAOT');
+require('./UI-chart/libs/db-connection');
+
+// KBANK model
+const KBANK = require('./UI-chart/models/stockKBANK');
+require('./UI-chart/libs/db-connection');
+
+
+// INSERT model
+/*const insertDT = require('./UI-chart/models/insertData');
+require('./UI-chart/libs/db-connection');*/
+
+// INSERT model
+const PTTsave = require('./UI-chart/models/PTTsave');
+require('./UI-chart/libs/db-connection');
+
+// view engine
+app.use(express.static(__dirname + '/public'));
+app.set('view engine', 'ejs');
+
+
+
 mongoose.connect('mongodb://localhost/data').then(
     () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
         console.log('Mongo conected');
@@ -157,9 +198,9 @@ app.get('/load/:cypher', function (req, res) {
         });
     });
 });
-app.listen(3000, () => console.log('Example app listening on port 3000!'));
-
-
+//app.listen(3000, () => console.log('Example app listening on port 3000!'));
+server.listen(port, () => console.log(`App running on port ${port}`));
+serverHttps.listen(port, () => console.log(`App running on port ${port}`));
 function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -168,3 +209,65 @@ function guid() {
     }
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
+
+
+//this section for fintech chart demo
+//get and send data to ui for generate graph
+app.get('/:tickerurl', (req, res, next) => {
+    var getCollectionStock;
+    var getTickerURL = req.params.tickerurl;
+    switch (getTickerURL) {
+      case "ptt":
+        getCollectionStock = PTT;
+        break;
+      case "cpall":
+        getCollectionStock = CPALL;
+        break;
+      case "dtac":
+        getCollectionStock = DTAC;
+        break;
+      case "aot":
+        getCollectionStock = AOT;
+        break;
+      case "kbank":
+        getCollectionStock = KBANK;
+        break;
+    }
+    getCollectionStock.find({}).select({ "_id": 0 }).limit(50)
+      .then(function (doc) {
+  
+        res.render('candlechart', { items: doc });
+      })
+      .catch(err => console.error(err));
+  });
+//save data to database
+  app.post('/:tickerurl', function (req, res) {
+    var postTickerURL = req.params.tickerurl;
+    var myData;
+    var postCollectionStock;
+    var myData = {
+      NameTicker: ('body: ', req.body.ticker),
+      StartDate: ('body: ', req.body.startDateInput),
+      EndDate: ('body: ', req.body.endDateInput),
+      DataImage: ('body: ', req.body.img)
+    }
+  
+    switch (postTickerURL) {
+      case "PTT":
+      case "CPALL":
+      case "DTAC":
+      case "AOT":
+      case "KBANK":
+        postCollectionStock = new PTTsave(myData).save()
+          .then(item => {
+            res.send(postCollectionStock);
+          })
+          .catch(err => {
+            res.status(400).send("unable to save to database");
+          });
+        console.log('Item inserted');;
+        break;
+      default:
+        res.status(400).send('ticket undified');
+    }
+  });
