@@ -86,16 +86,16 @@ then(function (result) {
     console.log(result);
 });
 
-app.get('/node/finalProject/secure', (req, res) => res.send('connection completed!'))
+app.get('/node/fintechShare/secure', (req, res) => res.send('connection completed!'))
 
 //public key
-app.get('/node/finalProject/secure/getPublicKey', function (req, res) {
+app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
     key = keystore.get('ServerKey');
     res.send(key.toJSON());
 });
 
 //hand shake
-app.get('/node/finalProject/secure/handShake/:cypher', function (req, res) {
+app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
 
     jose.JWE.createDecrypt(keystore.get('ServerKey')).
     decrypt(req.params.cypher).
@@ -173,7 +173,7 @@ app.post('/save', function (req, res) {
 });
 
 //load
-app.post('/node/finalProject/secure/load/', function (req, res) {
+app.post('/node/fintechShare/secure/load/', function (req, res) {
     // res.send('example data');
     var cypher = ('body: ', req.body.cypher);
     jose.JWE.createDecrypt(keystore.get('ServerKey')).
@@ -213,7 +213,7 @@ function guid() {
 
 //this section for fintech chart demo
 //get and send data to ui for generate graph
-app.get('/node/finalProject/secure/:tickerurl', (req, res, next) => {
+app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
     var getCollectionStock;
     var getTickerURL = req.params.tickerurl;
     switch (getTickerURL) {
@@ -241,7 +241,7 @@ app.get('/node/finalProject/secure/:tickerurl', (req, res, next) => {
       .catch(err => console.error(err));
   });
 //save data to database
-  app.post('/node/finalProject/secure/:tickerurl', function (req, res) {
+  app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
     var postTickerURL = req.params.tickerurl;
     var myData;
     var postCollectionStock;

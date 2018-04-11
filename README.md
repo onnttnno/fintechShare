@@ -1,2 +1,2 @@
 # fintechShare
-finalProject
+fintechShare
