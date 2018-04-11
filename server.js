@@ -43,7 +43,7 @@ const PTTsave = require('./UI-chart/models/PTTsave');
 require('./UI-chart/libs/db-connection');
 
 // view engine
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/UI-chart/public'));
 app.set('view engine', 'ejs');
 
 
@@ -86,16 +86,16 @@ then(function (result) {
     console.log(result);
 });
 
-app.get('/', (req, res) => res.send('connection completed!'))
+app.get('/node/finalProject/secure', (req, res) => res.send('connection completed!'))
 
 //public key
-app.get('/getPublicKey', function (req, res) {
+app.get('/node/finalProject/secure/getPublicKey', function (req, res) {
     key = keystore.get('ServerKey');
     res.send(key.toJSON());
 });
 
 //hand shake
-app.get('/handShake/:cypher', function (req, res) {
+app.get('/node/finalProject/secure/handShake/:cypher', function (req, res) {
 
     jose.JWE.createDecrypt(keystore.get('ServerKey')).
     decrypt(req.params.cypher).
@@ -173,17 +173,17 @@ app.post('/save', function (req, res) {
 });
 
 //load
-app.get('/load/:cypher', function (req, res) {
+app.post('/node/finalProject/secure/load/', function (req, res) {
     // res.send('example data');
-    var cypher = req.params.cypher;
+    var cypher = ('body: ', req.body.cypher);
     jose.JWE.createDecrypt(keystore.get('ServerKey')).
     decrypt(cypher).
     then(function (result) {
 
-        Data.findOne({
-            "token": result.token
+        PTTsave.findOne({
+            "id": result.id
         }, function (err, data) {
-            if (err) return res.send('Error: ' + err);
+            if (err) return res.status(400).send('Error not found data in DB: ' + err);
             // Prints "Space Ghost is a talk show host".
             else {
                 console.log(data);
@@ -196,7 +196,7 @@ app.get('/load/:cypher', function (req, res) {
                 });
             }
         });
-    });
+    }).catch(err => res.status(404).send('Decryption Error: '+err));
 });
 //app.listen(3000, () => console.log('Example app listening on port 3000!'));
 server.listen(port, () => console.log(`App running on port ${port}`));
@@ -213,7 +213,7 @@ function guid() {
 
 //this section for fintech chart demo
 //get and send data to ui for generate graph
-app.get('/:tickerurl', (req, res, next) => {
+app.get('/node/finalProject/secure/:tickerurl', (req, res, next) => {
     var getCollectionStock;
     var getTickerURL = req.params.tickerurl;
     switch (getTickerURL) {
@@ -241,11 +241,13 @@ app.get('/:tickerurl', (req, res, next) => {
       .catch(err => console.error(err));
   });
 //save data to database
-  app.post('/:tickerurl', function (req, res) {
+  app.post('/node/finalProject/secure/:tickerurl', function (req, res) {
     var postTickerURL = req.params.tickerurl;
     var myData;
     var postCollectionStock;
+    var guid = guid();
     var myData = {
+      id: guid,
       NameTicker: ('body: ', req.body.ticker),
       StartDate: ('body: ', req.body.startDateInput),
       EndDate: ('body: ', req.body.endDateInput),
@@ -260,7 +262,7 @@ app.get('/:tickerurl', (req, res, next) => {
       case "KBANK":
         postCollectionStock = new PTTsave(myData).save()
           .then(item => {
-            res.send(postCollectionStock);
+            res.send(guid);
           })
           .catch(err => {
             res.status(400).send("unable to save to database");
