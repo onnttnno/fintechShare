@@ -236,7 +236,7 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
     getCollectionStock.find({}).select({ "_id": 0 }).limit(50)
       .then(function (doc) {
   
-        res.render('./UI-chart/views/candlechart', { items: doc });
+        res.render('candlechart', { items: doc });
       })
       .catch(err => console.error(err));
   });
