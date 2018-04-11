@@ -198,9 +198,9 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
         });
     }).catch(err => res.status(404).send('Decryption Error: '+err));
 });
-//app.listen(3000, () => console.log('Example app listening on port 3000!'));
-server.listen(port, () => console.log(`App running on port ${port}`));
-serverHttps.listen(port, () => console.log(`App running on port ${port}`));
+app.listen(process.env.PORT, () => console.log('Example app listening on port '+process.env.PORT));
+//server.listen(port, () => console.log(`App running on port ${port}`));
+//serverHttps.listen(port, () => console.log(`App running on port ${port}`));
 function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
