@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const mongoose = require('mongoose');
 const jose = require('node-jose');
 var https = require('https');
 const server = require('http').createServer(app);
@@ -214,6 +213,7 @@ function guid() {
 //this section for fintech chart demo
 //get and send data to ui for generate graph
 app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
+    console.log(mongoose.connection.readyState);
     var getCollectionStock;
     var getTickerURL = req.params.tickerurl;
     switch (getTickerURL) {
@@ -245,6 +245,7 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
   });
 //save data to database
   app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
+    console.log(mongoose.connection.readyState);
     var postTickerURL = req.params.tickerurl;
     var myData;
     var postCollectionStock;
