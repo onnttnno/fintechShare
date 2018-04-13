@@ -9,7 +9,7 @@ const mongo = require('mongodb');
 const url = "mongodb://localhost:27017/";
 const bodyParser = require('body-parser');
 const path = require('path');
-var db;
+//var db;
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
@@ -48,8 +48,8 @@ app.set('view engine', 'ejs');
 
 
 //body pareser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+/*app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));*/
 // routes
 /*app.get('/', (req, res) => {
   let gt, lt;

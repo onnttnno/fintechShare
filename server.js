@@ -19,19 +19,19 @@ require('./UI-chart/libs/db-connection');
 
 // CPALL model
 const CPALL = require('./UI-chart/models/stockCPALL');
-require('./UI-chart/libs/db-connection');
+
 
 // DTAC model
 const DTAC = require('./UI-chart/models/stockDTAC');
-require('./UI-chart/libs/db-connection');
+
 
 // AOT model
 const AOT = require('./UI-chart/models/stockAOT');
-require('./UI-chart/libs/db-connection');
+
 
 // KBANK model
 const KBANK = require('./UI-chart/models/stockKBANK');
-require('./UI-chart/libs/db-connection');
+
 
 
 // INSERT model
@@ -40,10 +40,10 @@ require('./UI-chart/libs/db-connection');*/
 
 // INSERT model
 const PTTsave = require('./UI-chart/models/PTTsave');
-require('./UI-chart/libs/db-connection');
+
 
 // view engine
-app.use(express.static(__dirname + '/UI-chart/public'));
+app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
 
