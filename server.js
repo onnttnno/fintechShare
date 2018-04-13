@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+
 const jose = require('node-jose');
 var https = require('https');
 const server = require('http').createServer(app);
@@ -11,11 +12,9 @@ const port = process.env.PORT || 3000;
 //mongo lib
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-
+require('./UI-chart/libs/db-connection');
 // PTT model
 const PTT = require('./UI-chart/models/stockPTT');
-require('./UI-chart/libs/db-connection');
-
 // CPALL model
 const CPALL = require('./UI-chart/models/stockCPALL');
 
@@ -213,7 +212,7 @@ function guid() {
 //this section for fintech chart demo
 //get and send data to ui for generate graph
 app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
-    console.log(mongoose.connection.readyState);
+    
     var getCollectionStock;
     var getTickerURL = req.params.tickerurl;
     switch (getTickerURL) {
@@ -233,9 +232,8 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
         getCollectionStock = KBANK;
         break;
     }
-    getCollectionStock.find({}).select({ "_id": 0 }).limit(50)
+    getCollectionStock.find({}).select({ "_id": 0 })
       .then(function (doc) {
-  
         res.render('candlechart', { items: doc });
       }),
       function (err) {
@@ -245,7 +243,6 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
   });
 //save data to database
   app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
-    console.log(mongoose.connection.readyState);
     var postTickerURL = req.params.tickerurl;
     var myData;
     var postCollectionStock;
