@@ -55,9 +55,9 @@ const dbAPI=mongoose.connect('mongodb://localhost/data').then(
     }
 );
 //mongo schema
-/*const Schema = mongoose.Schema,
+const Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
-
+/*
 const dataSchema = new Schema({
     id: ObjectId,
     data: String,
