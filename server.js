@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-
+const mongoose = require('mongoose');
 const jose = require('node-jose');
 var https = require('https');
 const server = require('http').createServer(app);
@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 //mongo lib
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-require('./UI-chart/libs/db-connection');
+//require('./UI-chart/libs/db-connection');
 // PTT model
 const PTT = require('./UI-chart/models/stockPTT');
 // CPALL model
@@ -46,7 +46,7 @@ app.set('view engine', 'ejs');
 
 
 
-mongoose.connect('mongodb://localhost/data').then(
+const dbAPI=mongoose.connect('mongodb://localhost/data').then(
     () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
         console.log('Mongo conected');
     },
@@ -55,7 +55,7 @@ mongoose.connect('mongodb://localhost/data').then(
     }
 );
 //mongo schema
-const Schema = mongoose.Schema,
+/*const Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
 const dataSchema = new Schema({
@@ -64,14 +64,14 @@ const dataSchema = new Schema({
     image: String
 });
 
-var Data = mongoose.model('Data', dataSchema);
+var Data = mongoose.model('Data', dataSchema);*/
 
 const dataAPI = new Schema({
     api: String,
     tokens: String
 });
 
-var API = mongoose.model('API', dataAPI);
+var API = dbAPI.model('API', dataAPI);
 
 //init keystore
 var props = {
@@ -83,7 +83,7 @@ keystore.generate("oct", 1024, props).
 then(function (result) {
     console.log(result);
 });
-
+//check connection
 app.get('/node/fintechShare/secure', (req, res) => res.send('connection completed!'))
 
 //public key
@@ -232,8 +232,9 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
         getCollectionStock = KBANK;
         break;
     }
-    getCollectionStock.find({}).select({ "_id": 0 })
+    getCollectionStock.find({}).select({ "_id": 0 }).limit(50)
       .then(function (doc) {
+  
         res.render('candlechart', { items: doc });
       }),
       function (err) {

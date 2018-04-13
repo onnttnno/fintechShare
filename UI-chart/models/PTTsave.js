@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+require('./UI-chart/libs/db-connection');
 const chartSchema = new mongoose.Schema({
   NameTicker : String,
   StartDate : String, 
