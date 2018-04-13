@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 /**connection DB********************************************************************************************* */
 const dbChart = mongoose.createConnection('mongodb://localhost/Chart');
-const dbShare = dbChart.useDb('data');
+const dbShare = dbChart.createConnection('mongodb://localhost/data');
 /************************************************************************************************************ */
 /**Schema ****************************************************************************************************/
 // PTT model
