@@ -237,30 +237,40 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
     switch (getTickerURL) {
       case "ptt":
         getCollectionStock = pttModel;
+        findNow(getCollectionStock,res);
         break;
       case "cpall":
         getCollectionStock = cpallModel;
+        findNow(getCollectionStock,res);
         break;
       case "dtac":
         getCollectionStock = dtacModel;
+        findNow(getCollectionStock,res);
         break;
       case "aot":
         getCollectionStock = aotModel;
+        findNow(getCollectionStock,res);
         break;
       case "kbank":
         getCollectionStock = kbankModel;
+        findNow(getCollectionStock,res);
+        break;
+      default:
         break;
     }
-    getCollectionStock.find({}).select({ "_id": 0 }).limit(50)
-      .then(function (doc) {
-  
-        res.render('candlechart', { items: doc });
-      }),
-      function (err) {
-  
-      console.error("Error in find collection "+err);
-      }
   });
+
+  function findNow(getCollectionStock,res){
+    getCollectionStock.find({}).select({ "_id": 0 }).limit(50)
+    .then(function (doc) {
+
+      res.render('candlechart', { items: doc });
+    }),
+    function (err) {
+    console.error("Error in find collection "+err);
+    res.status(500).send(err);
+    }
+  }
 //save data to database
   app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
     var postTickerURL = req.params.tickerurl;
