@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-require('../libs/db-connection');
 const chartSchema = new mongoose.Schema({
   Date : String, 
   Open : Number, 
@@ -10,4 +9,4 @@ const chartSchema = new mongoose.Schema({
 });
 chartSchema.set('collection','KBANK');
 
-module.exports = mongoose.model('KBANK', chartSchema);
+module.exports = chartSchema;

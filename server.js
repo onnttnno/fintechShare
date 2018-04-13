@@ -13,6 +13,12 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 //require('./UI-chart/libs/db-connection');
+
+/**connection DB********************************************************************************************* */
+const dbChart = mongoose.createConnection('mongodb://localhost/Chart');
+const dbShare = dbChart.useDb('data');
+/************************************************************************************************************ */
+/**Schema ****************************************************************************************************/
 // PTT model
 const PTT = require('./UI-chart/models/stockPTT');
 // CPALL model
@@ -30,33 +36,39 @@ const AOT = require('./UI-chart/models/stockAOT');
 // KBANK model
 const KBANK = require('./UI-chart/models/stockKBANK');
 
+//APi
+const API = require('./UI-chart/models/apiAndTokens')
 
+// INSERT model
+const SHARE = require('./UI-chart/models/PTTsave');
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // INSERT model
 /*const insertDT = require('./UI-chart/models/insertData');
 require('./UI-chart/libs/db-connection');*/
 
-// INSERT model
-const PTTsave = require('./UI-chart/models/PTTsave');
-
-
+/**Model--------------------------------------------------------------------------------------------------------------- */
+//model of share
+const apiModel = dbShare.model('API',API);
+const shareModel=dbShare.model('PTTsave',SHARE);
+//model of chart
+const kbankModel=dbChart.model('KBANK',KBANK);
+const aotModel=dbChart.model('AOT',AOT);
+const dtacModel=dbChart.model('DTAC',DTAC);
+const cpallModel=dbChart.model('CPALL',CPALL);
+const pttModel=dbChart.model('PTT',PTT);
+/*--------------------------------------------------------------------------------------------------------------------- */
 // view engine
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
 
 
-const dbAPI=mongoose.connect('mongodb://localhost/data').then(
-    () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
-        console.log('Mongo conected');
-    },
-    err => { /** handle initial connection error */
-        console.error(err);
-    }
-);
+
 //mongo schema
-const Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId;
+/*const Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId;*/
 /*
 const dataSchema = new Schema({
     id: ObjectId,
@@ -66,12 +78,12 @@ const dataSchema = new Schema({
 
 var Data = mongoose.model('Data', dataSchema);*/
 
-const dataAPI = new Schema({
+/*const dataAPI = new Schema({
     api: String,
     tokens: String
 });
 
-var API = dbAPI.model('API', dataAPI);
+var API = mongoose.model('API', dataAPI);*/
 
 //init keystore
 var props = {
@@ -112,7 +124,7 @@ app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
             then(function (re) {
                 // {result} is a jose.JWK.Key
                 //key = result;
-                API.find({
+                apiModel.find({
                     api: result.api
                 }, function (err, data) {
                     if (err) {
@@ -178,7 +190,7 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     decrypt(cypher).
     then(function (result) {
 
-        PTTsave.findOne({
+        shareModel.findOne({
             "id": result.id
         }, function (err, data) {
             if (err) return res.status(400).send('Error not found data in DB: ' + err);
@@ -217,19 +229,19 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
     var getTickerURL = req.params.tickerurl;
     switch (getTickerURL) {
       case "ptt":
-        getCollectionStock = PTT;
+        getCollectionStock = pttModel;
         break;
       case "cpall":
-        getCollectionStock = CPALL;
+        getCollectionStock = cpallModel;
         break;
       case "dtac":
-        getCollectionStock = DTAC;
+        getCollectionStock = dtacModel;
         break;
       case "aot":
-        getCollectionStock = AOT;
+        getCollectionStock = aotModel;
         break;
       case "kbank":
-        getCollectionStock = KBANK;
+        getCollectionStock = kbankModel;
         break;
     }
     getCollectionStock.find({}).select({ "_id": 0 }).limit(50)
@@ -262,7 +274,7 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
       case "DTAC":
       case "AOT":
       case "KBANK":
-        postCollectionStock = new PTTsave(myData).save()
+        postCollectionStock = new shareModel(myData).save()
           .then(item => {
             res.send(guid);
             console.log('Item inserted');

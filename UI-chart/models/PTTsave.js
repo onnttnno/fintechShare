@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-require('../libs/db-connection');
 const chartSchema = new mongoose.Schema({
   NameTicker : String,
   StartDate : String, 
@@ -8,4 +7,4 @@ const chartSchema = new mongoose.Schema({
 });
 chartSchema.set('collection','PTTsave');
 
-module.exports = mongoose.model('PTTsave', chartSchema);
+module.exports = chartSchema;
