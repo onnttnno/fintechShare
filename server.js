@@ -15,8 +15,15 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 //require('./UI-chart/libs/db-connection');
 
 /**connection DB********************************************************************************************* */
-const dbChart = mongoose.createConnection('mongodb://localhost/Chart');
-const dbShare = dbChart.createConnection('mongodb://localhost/data');
+//chart
+const dbChart = mongoose.createConnection('mongodb://localhost/Chart', {useMongoClient: true});
+dbChart.on('connected', function(res){console.log('DBchart connected')});
+dbChart.on('disconnected', function(err){console.log('DBchart cant connecting: '+err)});
+
+//share
+const dbShare = mongoose.createConnection('mongodb://localhost/data', {useMongoClient: true});
+dbChart.on('connected', function(res){console.log('DBShare connected')});
+dbShare.on('disconnected', function(err){console.log('DBShare cant connecting: '+err)});
 /************************************************************************************************************ */
 /**Schema ****************************************************************************************************/
 // PTT model
