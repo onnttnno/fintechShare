@@ -237,8 +237,11 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
       .then(function (doc) {
   
         res.render('/UI-chart/views/candlechart', { items: doc });
-      })
-      .catch(err => console.error(err));
+      }),
+      function (err) {
+  
+      console.error("Error in find collection "+err);
+      }
   });
 //save data to database
   app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
@@ -263,11 +266,11 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
         postCollectionStock = new PTTsave(myData).save()
           .then(item => {
             res.send(guid);
-          })
-          .catch(err => {
-            res.status(400).send("unable to save to database");
-          });
-        console.log('Item inserted');;
+            console.log('Item inserted');
+          }, err=>{
+              console.error('Item inserted Error'+err);
+              res.status(500).send(err.message);
+        })
         break;
       default:
         res.status(400).send('ticket undified');
