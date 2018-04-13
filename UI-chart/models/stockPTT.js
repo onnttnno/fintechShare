@@ -9,4 +9,4 @@ const chartSchema = new mongoose.Schema({
 });
 chartSchema.set('collection','PTT');
 
-module.exports = mongoose;
+module.exports = chartSchema;
