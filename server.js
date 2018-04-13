@@ -16,12 +16,12 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 /**connection DB********************************************************************************************* */
 //chart
-const dbChart = mongoose.createConnection('mongodb://localhost/Chart', {useMongoClient: true});
+const dbChart = mongoose.createConnection('mongodb://localhost/Chart');
 dbChart.on('connected', function(res){console.log('DBchart connected')});
 dbChart.on('disconnected', function(err){console.log('DBchart cant connecting: '+err)});
 
 //share
-const dbShare = mongoose.createConnection('mongodb://localhost/data', {useMongoClient: true});
+const dbShare = mongoose.createConnection('mongodb://localhost/data');
 dbChart.on('connected', function(res){console.log('DBShare connected')});
 dbShare.on('disconnected', function(err){console.log('DBShare cant connecting: '+err)});
 /************************************************************************************************************ */
