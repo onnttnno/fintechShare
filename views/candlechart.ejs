@@ -363,7 +363,7 @@
 					//"Successfully Saved";
 				}
 			};
-			xmlhttp.open("POST", "http://localhost:3000/" + ticker);
+			xmlhttp.open("POST", "http://110.164.179.154/node/fintechShare/secure/" + ticker);
 			xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 			xmlhttp.send(JSON.stringify(formData));
 
