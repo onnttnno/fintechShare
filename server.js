@@ -218,14 +218,7 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
 app.listen(process.env.PORT, () => console.log('Example app listening on port '+process.env.PORT));
 //server.listen(port, () => console.log(`App running on port ${port}`));
 //serverHttps.listen(port, () => console.log(`App running on port ${port}`));
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-}
+
 
 
 //this section for fintech chart demo
@@ -276,7 +269,16 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
     var postTickerURL = req.params.tickerurl;
     var myData;
     var postCollectionStock;
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
     var guid = guid();
+    
     var myData = {
       id: guid,
       NameTicker: ('body: ', req.body.ticker),
