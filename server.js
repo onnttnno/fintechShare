@@ -189,7 +189,7 @@ app.post('/save', function (req, res) {
         });
 });
 
-//load
+//load img adn data
 app.post('/node/fintechShare/secure/load/', function (req, res) {
     // res.send('example data');
     var cypher = ('body: ', req.body.cypher);
@@ -207,20 +207,76 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
                 jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
                 update(data).
                 final().
-                then(function (result) {
+                then(function (res) {
                     // {result} is a JSON Object -- JWE using the JSON General Serialization
-                    res.send(result);
+                    res.send(res);
                 });
             }
         });
-    }).catch(err => res.status(404).send('Decryption Error: '+err));
+    });
 });
 app.listen(process.env.PORT, () => console.log('Example app listening on port '+process.env.PORT));
 //server.listen(port, () => console.log(`App running on port ${port}`));
 //serverHttps.listen(port, () => console.log(`App running on port ${port}`));
 
+//open shared data
+app.post('/node/fintechShare/secure/open/', function (req, res) {
 
+    var cypher = ('body: ', req.body.cypher);
+    jose.JWE.createDecrypt(keystore.get('ServerKey')).
+    decrypt(cypher).
+    then(function (data) {
+        let start = data.start;
+        let end = data.end;
+        let ticker = data.ticker;
 
+        var getCollectionStock;
+        switch (ticker) {
+            case "ptt":
+              getCollectionStock = pttModel;
+              findNowSpacific(getCollectionStock,res,start,end);
+              break;
+            case "cpall":
+              getCollectionStock = cpallModel;
+              findNowSpacific(getCollectionStock,res,start,end);
+              break;
+            case "dtac":
+              getCollectionStock = dtacModel;
+              findNowSpacific(getCollectionStock,res,start,end);
+              break;
+            case "aot":
+              getCollectionStock = aotModel;
+              findNowSpacific(getCollectionStock,res,start,end);
+              break;
+            case "kbank":
+              getCollectionStock = kbankModel;
+              findNowSpacific(getCollectionStock,res,start,end);
+              break;
+            default:
+              break;
+          }
+    });
+});
+
+function findNowSpacific(getCollectionStock,res,start,end){
+    getCollectionStock.find({}).select({ "_id": 0 }).where('Date').gt(start).lt(end)
+    .then(function (doc) {
+
+      //res.render('candlechart', { items: doc });
+      //res.send(doc);
+      jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
+      update(doc).
+      final().
+      then(function (res) {
+          // {result} is a JSON Object -- JWE using the JSON General Serialization
+          res.send(res);
+      });
+    }),
+    function (err) {
+    console.error("Error in find collection "+err);
+    res.status(500).send(err);
+    }
+}
 //this section for fintech chart demo
 //get and send data to ui for generate graph
 app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
