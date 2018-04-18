@@ -190,9 +190,9 @@ app.post('/save', function (req, res) {
 });
 
 //load img adn data
-app.post('/node/fintechShare/secure/load/', function (req, res) {
+app.get('/node/fintechShare/secure/load/:cypher', function (req, res) {
     // res.send('example data');
-    var cypher = ('body: ', req.body.cypher);
+    var cypher = ('body: ', req.params.cypher);
     jose.JWE.createDecrypt(keystore.get('ServerKey')).
     decrypt(cypher).
     then(function (result) {
@@ -220,9 +220,9 @@ app.listen(process.env.PORT, () => console.log('Example app listening on port '+
 //serverHttps.listen(port, () => console.log(`App running on port ${port}`));
 
 //open shared data
-app.post('/node/fintechShare/secure/open/', function (req, res) {
+app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
 
-    var cypher = ('body: ', req.body.cypher);
+    var cypher = ('body: ', req.params.cypher);
     jose.JWE.createDecrypt(keystore.get('ServerKey')).
     decrypt(cypher).
     then(function (data) {
