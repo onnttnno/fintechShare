@@ -192,7 +192,7 @@ app.post('/save', function (req, res) {
 //load img adn data
 app.get('/node/fintechShare/secure/load/:cypher', function (req, res) {
     // res.send('example data');
-    var cypher = ('body: ', req.params.cypher);
+   /* var cypher = ('body: ', req.params.cypher);
     jose.JWE.createDecrypt(keystore.get('ServerKey')).
     decrypt(cypher).
     then(function (result) {
@@ -213,7 +213,55 @@ app.get('/node/fintechShare/secure/load/:cypher', function (req, res) {
                 });
             }
         });
+    });*/
+
+    shareModel.findOne({
+        "id": result.id
+    }, function (err, data) {
+        if (err) return res.status(400).send('Error not found data in DB: ' + err);
+        // Prints "Space Ghost is a talk show host".
+        else {
+            console.log(data);
+            /*jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
+            update(data).
+            final().
+            then(function (res) {
+                // {result} is a JSON Object -- JWE using the JSON General Serialization
+                res.send(res);
+            });*/
+        let start = data.start;
+        let end = data.end;
+        let ticker = data.ticker;
+
+        var getCollectionStock;
+        switch (ticker) {
+            case "ptt":
+              getCollectionStock = pttModel;
+              findNowSpacific(getCollectionStock,res,start,end);
+              break;
+            case "cpall":
+              getCollectionStock = cpallModel;
+              findNowSpacific(getCollectionStock,res,start,end);
+              break;
+            case "dtac":
+              getCollectionStock = dtacModel;
+              findNowSpacific(getCollectionStock,res,start,end);
+              break;
+            case "aot":
+              getCollectionStock = aotModel;
+              findNowSpacific(getCollectionStock,res,start,end);
+              break;
+            case "kbank":
+              getCollectionStock = kbankModel;
+              findNowSpacific(getCollectionStock,res,start,end);
+              break;
+            default:
+              break;
+          }
+
+        }
     });
+
 });
 app.listen(process.env.PORT, () => console.log('Example app listening on port '+process.env.PORT));
 //server.listen(port, () => console.log(`App running on port ${port}`));
@@ -264,13 +312,14 @@ function findNowSpacific(getCollectionStock,res,start,end){
 
       //res.render('candlechart', { items: doc });
       //res.send(doc);
-      jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
+     /* jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
       update(doc).
       final().
       then(function (res) {
           // {result} is a JSON Object -- JWE using the JSON General Serialization
           res.send(res);
-      });
+      });*/
+      res.send(doc);
     }),
     function (err) {
     console.error("Error in find collection "+err);
