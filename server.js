@@ -229,9 +229,9 @@ app.get('/node/fintechShare/secure/load/:cypher', function (req, res) {
                 // {result} is a JSON Object -- JWE using the JSON General Serialization
                 res.send(res);
             });*/
-        let start = data.start;
-        let end = data.end;
-        let ticker = data.ticker;
+        let start = data.StartDate;
+        let end = data.endDateInput;
+        let ticker = data.NameTicker;
 
         var getCollectionStock;
         switch (ticker) {
@@ -400,7 +400,7 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
       case "KBANK":
         postCollectionStock = new shareModel(myData).save()
           .then(item => {
-            res.send(guid);
+            res.send(item.id);
             console.log('Item inserted');
           }, err=>{
               console.error('Item inserted Error'+err);
