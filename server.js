@@ -214,9 +214,9 @@ app.get('/node/fintechShare/secure/load/:cypher', function (req, res) {
             }
         });
     });*/
-
+    var cypher = ('body: ', req.params.cypher);
     shareModel.findOne({
-        "id": result.id
+        "id": cypher
     }, function (err, data) {
         if (err) return res.status(400).send('Error not found data in DB: ' + err);
         // Prints "Space Ghost is a talk show host".
