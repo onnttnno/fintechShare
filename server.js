@@ -229,7 +229,7 @@ app.get('/node/fintechShare/secure/load/:cypher', function (req, res) {
      });*/
     var cypher = ('body: ', req.params.cypher);
     shareModel.find({
-        "Trigger": cypher
+        "_id": cypher
     }, function (err, data) {
         if (err) return res.status(400).send('Error not found data in DB: ' + err);
         // Prints "Space Ghost is a talk show host".
@@ -287,8 +287,8 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
     jose.JWE.createDecrypt(keystore.get('ServerKey')).
     decrypt(cypher).
     then(function (data) {
-        let start = data.start;
-        let end = data.end;
+        let start = data.StartDate;
+        let end = data.EndDate;
         let ticker = data.ticker;
 
         var getCollectionStock;
@@ -405,7 +405,7 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
     var guid = guid();
 
     var myData = {
-        Trigger: guid,
+        _id: guid,
         NameTicker: ('body: ', req.body.ticker),
         StartDate: ('body: ', req.body.startDateInput),
         EndDate: ('body: ', req.body.endDateInput),
