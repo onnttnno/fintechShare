@@ -4,26 +4,39 @@ const mongoose = require('mongoose');
 const jose = require('node-jose');
 var https = require('https');
 const server = require('http').createServer(app);
-const serverHttps=https.createServer(app);
+const serverHttps = https.createServer(app);
 var keystore = jose.JWK.createKeyStore();
 const bodyParser = require('body-parser');
 const path = require('path');
 const port = process.env.PORT || 3000;
 //mongo lib
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.json({
+    limit: '50mb'
+}));
+app.use(bodyParser.urlencoded({
+    limit: '50mb',
+    extended: true
+}));
 //require('./UI-chart/libs/db-connection');
 
 /**connection DB********************************************************************************************* */
 //chart
 const dbChart = mongoose.createConnection('mongodb://localhost/Chart');
-dbChart.on('connected', function(res){console.log('DBchart connected')});
-dbChart.on('disconnected', function(err){console.log('DBchart cant connecting: '+err)});
+dbChart.on('connected', function (res) {
+    console.log('DBchart connected')
+});
+dbChart.on('disconnected', function (err) {
+    console.log('DBchart cant connecting: ' + err)
+});
 
 //share
 const dbShare = mongoose.createConnection('mongodb://localhost/data');
-dbChart.on('connected', function(res){console.log('DBShare connected')});
-dbShare.on('disconnected', function(err){console.log('DBShare cant connecting: '+err)});
+dbChart.on('connected', function (res) {
+    console.log('DBShare connected')
+});
+dbShare.on('disconnected', function (err) {
+    console.log('DBShare cant connecting: ' + err)
+});
 /************************************************************************************************************ */
 /**Schema ****************************************************************************************************/
 // PTT model
@@ -57,14 +70,14 @@ require('./UI-chart/libs/db-connection');*/
 
 /**Model--------------------------------------------------------------------------------------------------------------- */
 //model of share
-const apiModel = dbShare.model('API',API);
-const shareModel=dbShare.model('PTTsave',SHARE);
+const apiModel = dbShare.model('API', API);
+const shareModel = dbShare.model('PTTsave', SHARE);
 //model of chart
-const kbankModel=dbChart.model('KBANK',KBANK);
-const aotModel=dbChart.model('AOT',AOT);
-const dtacModel=dbChart.model('DTAC',DTAC);
-const cpallModel=dbChart.model('CPALL',CPALL);
-const pttModel=dbChart.model('PTT',PTT);
+const kbankModel = dbChart.model('KBANK', KBANK);
+const aotModel = dbChart.model('AOT', AOT);
+const dtacModel = dbChart.model('DTAC', DTAC);
+const cpallModel = dbChart.model('CPALL', CPALL);
+const pttModel = dbChart.model('PTT', PTT);
 /*--------------------------------------------------------------------------------------------------------------------- */
 // view engine
 app.use(express.static(__dirname + '/public'));
@@ -144,7 +157,7 @@ app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
                         final().
                         then(function (cy) {
                             // {result} is a JSON Object -- JWE using the JSON General Serialization
-                            console.info("cypher"+cy);
+                            console.info("cypher" + cy);
                             res.send(cy);
                         });
                     }
@@ -192,30 +205,30 @@ app.post('/save', function (req, res) {
 //load img adn data
 app.get('/node/fintechShare/secure/load/:cypher', function (req, res) {
     // res.send('example data');
-   /* var cypher = ('body: ', req.params.cypher);
-    jose.JWE.createDecrypt(keystore.get('ServerKey')).
-    decrypt(cypher).
-    then(function (result) {
+    /* var cypher = ('body: ', req.params.cypher);
+     jose.JWE.createDecrypt(keystore.get('ServerKey')).
+     decrypt(cypher).
+     then(function (result) {
 
-        shareModel.findOne({
-            "id": result.id
-        }, function (err, data) {
-            if (err) return res.status(400).send('Error not found data in DB: ' + err);
-            // Prints "Space Ghost is a talk show host".
-            else {
-                console.log(data);
-                jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
-                update(data).
-                final().
-                then(function (res) {
-                    // {result} is a JSON Object -- JWE using the JSON General Serialization
-                    res.send(res);
-                });
-            }
-        });
-    });*/
+         shareModel.findOne({
+             "id": result.id
+         }, function (err, data) {
+             if (err) return res.status(400).send('Error not found data in DB: ' + err);
+             // Prints "Space Ghost is a talk show host".
+             else {
+                 console.log(data);
+                 jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
+                 update(data).
+                 final().
+                 then(function (res) {
+                     // {result} is a JSON Object -- JWE using the JSON General Serialization
+                     res.send(res);
+                 });
+             }
+         });
+     });*/
     var cypher = ('body: ', req.params.cypher);
-    shareModel.findOne({
+    shareModel.find({
         "id": cypher
     }, function (err, data) {
         if (err) return res.status(400).send('Error not found data in DB: ' + err);
@@ -229,41 +242,41 @@ app.get('/node/fintechShare/secure/load/:cypher', function (req, res) {
                 // {result} is a JSON Object -- JWE using the JSON General Serialization
                 res.send(res);
             });*/
-        let start = data.StartDate;
-        let end = data.endDateInput;
-        let ticker = data.NameTicker;
+            let start = data.StartDate;
+            let end = data.endDateInput;
+            let ticker = data.NameTicker;
 
-        var getCollectionStock;
-        switch (ticker) {
-            case "ptt":
-              getCollectionStock = pttModel;
-              findNowSpacific(getCollectionStock,res,start,end);
-              break;
-            case "cpall":
-              getCollectionStock = cpallModel;
-              findNowSpacific(getCollectionStock,res,start,end);
-              break;
-            case "dtac":
-              getCollectionStock = dtacModel;
-              findNowSpacific(getCollectionStock,res,start,end);
-              break;
-            case "aot":
-              getCollectionStock = aotModel;
-              findNowSpacific(getCollectionStock,res,start,end);
-              break;
-            case "kbank":
-              getCollectionStock = kbankModel;
-              findNowSpacific(getCollectionStock,res,start,end);
-              break;
-            default:
-              break;
-          }
+            var getCollectionStock;
+            switch (ticker) {
+                case "ptt":
+                    getCollectionStock = pttModel;
+                    findNowSpacific(getCollectionStock, res, start, end);
+                    break;
+                case "cpall":
+                    getCollectionStock = cpallModel;
+                    findNowSpacific(getCollectionStock, res, start, end);
+                    break;
+                case "dtac":
+                    getCollectionStock = dtacModel;
+                    findNowSpacific(getCollectionStock, res, start, end);
+                    break;
+                case "aot":
+                    getCollectionStock = aotModel;
+                    findNowSpacific(getCollectionStock, res, start, end);
+                    break;
+                case "kbank":
+                    getCollectionStock = kbankModel;
+                    findNowSpacific(getCollectionStock, res, start, end);
+                    break;
+                default:
+                    break;
+            }
 
         }
     });
 
 });
-app.listen(process.env.PORT, () => console.log('Example app listening on port '+process.env.PORT));
+app.listen(process.env.PORT, () => console.log('Example app listening on port ' + process.env.PORT));
 //server.listen(port, () => console.log(`App running on port ${port}`));
 //serverHttps.listen(port, () => console.log(`App running on port ${port}`));
 
@@ -281,99 +294,106 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
         var getCollectionStock;
         switch (ticker) {
             case "ptt":
-              getCollectionStock = pttModel;
-              findNowSpacific(getCollectionStock,res,start,end);
-              break;
+                getCollectionStock = pttModel;
+                findNowSpacific(getCollectionStock, res, start, end);
+                break;
             case "cpall":
-              getCollectionStock = cpallModel;
-              findNowSpacific(getCollectionStock,res,start,end);
-              break;
+                getCollectionStock = cpallModel;
+                findNowSpacific(getCollectionStock, res, start, end);
+                break;
             case "dtac":
-              getCollectionStock = dtacModel;
-              findNowSpacific(getCollectionStock,res,start,end);
-              break;
+                getCollectionStock = dtacModel;
+                findNowSpacific(getCollectionStock, res, start, end);
+                break;
             case "aot":
-              getCollectionStock = aotModel;
-              findNowSpacific(getCollectionStock,res,start,end);
-              break;
+                getCollectionStock = aotModel;
+                findNowSpacific(getCollectionStock, res, start, end);
+                break;
             case "kbank":
-              getCollectionStock = kbankModel;
-              findNowSpacific(getCollectionStock,res,start,end);
-              break;
+                getCollectionStock = kbankModel;
+                findNowSpacific(getCollectionStock, res, start, end);
+                break;
             default:
-              break;
-          }
+                break;
+        }
     });
 });
 
-function findNowSpacific(getCollectionStock,res,start,end){
-    getCollectionStock.find({}).select({ "_id": 0 }).where('Date').gt(start).lt(end)
-    .then(function (doc) {
+function findNowSpacific(getCollectionStock, res, start, end) {
+    getCollectionStock.find({}).select({
+            "_id": 0
+        }).where('Date').gt(start).lt(end)
+        .then(function (doc) {
 
-      //res.render('candlechart', { items: doc });
-      //res.send(doc);
-     /* jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
-      update(doc).
-      final().
-      then(function (res) {
-          // {result} is a JSON Object -- JWE using the JSON General Serialization
-          res.send(res);
-      });*/
-      res.send(doc);
-    }),
-    function (err) {
-    console.error("Error in find collection "+err);
-    res.status(500).send(err);
-    }
+            //res.render('candlechart', { items: doc });
+            //res.send(doc);
+            /* jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
+             update(doc).
+             final().
+             then(function (res) {
+                 // {result} is a JSON Object -- JWE using the JSON General Serialization
+                 res.send(res);
+             });*/
+            res.send(doc);
+        }),
+        function (err) {
+            console.error("Error in find collection " + err);
+            res.status(500).send(err);
+        }
 }
 //this section for fintech chart demo
 //get and send data to ui for generate graph
 app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
-    
+
     var getCollectionStock;
     var getTickerURL = req.params.tickerurl;
     switch (getTickerURL) {
-      case "ptt":
-        getCollectionStock = pttModel;
-        findNow(getCollectionStock,res);
-        break;
-      case "cpall":
-        getCollectionStock = cpallModel;
-        findNow(getCollectionStock,res);
-        break;
-      case "dtac":
-        getCollectionStock = dtacModel;
-        findNow(getCollectionStock,res);
-        break;
-      case "aot":
-        getCollectionStock = aotModel;
-        findNow(getCollectionStock,res);
-        break;
-      case "kbank":
-        getCollectionStock = kbankModel;
-        findNow(getCollectionStock,res);
-        break;
-      default:
-        break;
+        case "ptt":
+            getCollectionStock = pttModel;
+            findNow(getCollectionStock, res);
+            break;
+        case "cpall":
+            getCollectionStock = cpallModel;
+            findNow(getCollectionStock, res);
+            break;
+        case "dtac":
+            getCollectionStock = dtacModel;
+            findNow(getCollectionStock, res);
+            break;
+        case "aot":
+            getCollectionStock = aotModel;
+            findNow(getCollectionStock, res);
+            break;
+        case "kbank":
+            getCollectionStock = kbankModel;
+            findNow(getCollectionStock, res);
+            break;
+        default:
+            break;
     }
-  });
+});
 
-  function findNow(getCollectionStock,res){
-    getCollectionStock.find({}).select({ "_id": 0 }).limit(50)
-    .then(function (doc) {
+function findNow(getCollectionStock, res) {
+    getCollectionStock.find({}).select({
+            "_id": 0
+        }).limit(50)
+        .then(function (doc) {
 
-      res.render('candlechart', { items: doc });
-    }),
-    function (err) {
-    console.error("Error in find collection "+err);
-    res.status(500).send(err);
-    }
-  }
+            res.render('candlechart', {
+                items: doc
+            });
+        }),
+        function (err) {
+            console.error("Error in find collection " + err);
+            res.status(500).send(err);
+        }
+}
 //save data to database
-  app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
+app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
     var postTickerURL = req.params.tickerurl;
     var myData;
     var postCollectionStock;
+
     function guid() {
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -383,31 +403,33 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
     var guid = guid();
-    
+
     var myData = {
-      id: guid,
-      NameTicker: ('body: ', req.body.ticker),
-      StartDate: ('body: ', req.body.startDateInput),
-      EndDate: ('body: ', req.body.endDateInput),
-      DataImage: ('body: ', req.body.img)
+        trigger: guid,
+        NameTicker: ('body: ', req.body.ticker),
+        StartDate: ('body: ', req.body.startDateInput),
+        EndDate: ('body: ', req.body.endDateInput),
+        DataImage: ('body: ', req.body.img)
     }
-  
+
     switch (postTickerURL) {
-      case "PTT":
-      case "CPALL":
-      case "DTAC":
-      case "AOT":
-      case "KBANK":
-        postCollectionStock = new shareModel(myData).save()
-          .then(item => {
-            res.send(item.id);
-            console.log('Item inserted');
-          }, err=>{
-              console.error('Item inserted Error'+err);
-              res.status(500).send(err.message);
-        })
-        break;
-      default:
-        res.status(400).send('ticket undified');
+        case "PTT":
+        case "CPALL":
+        case "DTAC":
+        case "AOT":
+        case "KBANK":
+            postCollectionStock = new shareModel(myData).save()
+                .then(item => {
+                    console.log('Item inserted');
+                    console.log(item);
+                    res.send(item.id);
+                    
+                }, err => {
+                    console.error('Item inserted Error' + err);
+                    res.status(500).send(err.message);
+                })
+            break;
+        default:
+            res.status(400).send('ticket undified');
     }
-  });
+});
