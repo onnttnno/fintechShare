@@ -10,6 +10,23 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const port = process.env.PORT || 3000;
 //mongo lib
+
+var forge = require('node-forge');
+forge.options.usePureJavaScript = true;
+///serverside
+var kdf1;
+var kem;
+var encap;
+forge.rsa.generateKeyPair({bits: 2048, workers: -1}, function(err, keypair) {
+    // keypair.privateKey, keypair.publicKey
+    keystore = keypair;
+    kdf1 = new forge.kem.kdf1(forge.md.sha1.create());
+    kem = forge.kem.rsa.create(kdf1);
+    encap = kem.encrypt(keypair.publicKey, 16);
+  });
+//client side
+var PKservice;
+
 app.use(bodyParser.json({
     limit: '50mb'
 }));
@@ -104,7 +121,7 @@ var Data = mongoose.model('Data', dataSchema);*/
 });
 
 var API = mongoose.model('API', dataAPI);*/
-
+/*
 //init keystore
 var props = {
     kid: 'ServerKey',
@@ -114,19 +131,20 @@ var props = {
 keystore.generate("oct", 1024, props).
 then(function (result) {
     console.log(result);
-});
+});*/
 //check connection
 app.get('/node/fintechShare/secure', (req, res) => res.send('connection completed!'))
 
 //public key
 app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
-    key = keystore.get('ServerKey');
-    res.send(key.toJSON());
+    /*key = keystore.get('ServerKey');
+    res.send(key.toJSON());*/
+    res.send(keystore.publicKey);
 });
 
 //hand shake
 app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
-
+    /*
     jose.JWE.createDecrypt(keystore.get('ServerKey')).
     decrypt(req.params.cypher).
     then(function (result) {
@@ -167,6 +185,24 @@ app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
             });
         });
     });
+    */
+   
+    var chipher =('body: ', req.body.ticker);
+    var decrypted = keystore.privateKey.decrypt(chipher, 'RSA-OAEP', {
+        md: forge.md.sha256.create(),
+        mgf1: {
+          md: forge.md.sha1.create()
+        }
+      });
+     PKservice = decrypted;
+
+     var encrypted = PKservice.encrypt(unpack('handShake success'), 'RSA-OAEP', {
+        md: forge.md.sha256.create(),
+        mgf1: {
+          md: forge.md.sha1.create()
+        }
+      });
+      res.send(encrypted);
 });
 
 //save
@@ -334,7 +370,14 @@ function findNowSpacific(getCollectionStock, res, start, end) {
                  // {result} is a JSON Object -- JWE using the JSON General Serialization
                  res.send(res);
              });*/
-            res.send(doc);
+            //res.send(doc);//may be ...
+            var chipher = PKservice.encrypt(doc, 'RSA-OAEP', {
+                md: forge.md.sha256.create(),
+                mgf1: {
+                  md: forge.md.sha1.create()
+                }
+              });
+              res.send(chipher);
         }),
         function (err) {
             console.error("Error in find collection " + err);
@@ -433,3 +476,19 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
             res.status(400).send('ticket undified');
     }
 });
+function pack(bytes) {
+    var chars = [];
+    for(var i = 0, n = bytes.length; i < n;) {
+        chars.push(((bytes[i++] & 0xff) << 8) | (bytes[i++] & 0xff));
+    }
+    return String.fromCharCode.apply(null, chars);
+}
+
+function unpack(str) {
+    var bytes = [];
+    for(var i = 0, n = str.length; i < n; i++) {
+        var char = str.charCodeAt(i);
+        bytes.push(char >>> 8, char & 0xFF);
+    }
+    return bytes;
+}
