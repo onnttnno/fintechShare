@@ -1,0 +1,17 @@
+{
+  "name": "tes_my_tls",
+  "version": "1.0.0",
+  "description": "testMypencryption",
+  "main": "clientSide.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "me",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "node-forge": "^0.7.5",
+    "ntru": "^3.1.5",
+    "xmlhttprequest": "^1.8.0"
+  }
+}
