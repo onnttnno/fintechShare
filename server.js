@@ -158,8 +158,8 @@ app.get('/node/fintechShare/secure', (req, res) => res.send('connection complete
 app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
     /*key = keystore.get('ServerKey');
     res.send(key.toJSON());*/
-    console.log(_arrayBufferToBase64(keystore.publicKey));
-    res.send(_arrayBufferToBase64(keystore.publicKey));
+   // console.log(_arrayBufferToBase64(keystore.publicKey));
+    res.send(keystore.publicKey);
 });
 
 //hand shake
@@ -208,7 +208,7 @@ app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
     */
    
     var chipher =('body: ', req.body.cypher);
-    chipher =_base64ToArrayBuffer(chipher);
+   // chipher =_base64ToArrayBuffer(chipher);
     var decrypted = keystore.privateKey.decrypt(chipher, 'RSA-OAEP', {
         md: forge.md.sha256.create(),
         mgf1: {
