@@ -133,13 +133,32 @@ then(function (result) {
     console.log(result);
 });*/
 //check connection
+function _arrayBufferToBase64( buffer ) {
+    var binary = '';
+    var bytes = new Uint8Array( buffer );
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode( bytes[ i ] );
+    }
+    return window.btoa( binary );
+}
+function _base64ToArrayBuffer(base64) {
+    var binary_string =  window.atob(base64);
+    var len = binary_string.length;
+    var bytes = new Uint8Array( len );
+    for (var i = 0; i < len; i++)        {
+        bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
+
 app.get('/node/fintechShare/secure', (req, res) => res.send('connection completed!'))
 
 //public key
 app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
     /*key = keystore.get('ServerKey');
     res.send(key.toJSON());*/
-    res.send(keystore.publicKey);
+    res.send(_arrayBufferToBase64(keystore.publicKey));
 });
 
 //hand shake
@@ -187,7 +206,8 @@ app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
     });
     */
    
-    var chipher =('body: ', req.body.ticker);
+    var chipher =('body: ', req.body.cypher);
+    chipher =_base64ToArrayBuffer(chipher);
     var decrypted = keystore.privateKey.decrypt(chipher, 'RSA-OAEP', {
         md: forge.md.sha256.create(),
         mgf1: {
@@ -378,13 +398,22 @@ function findNowSpacific(getCollectionStock, res, start, end) {
                  res.send(res);
              });*/
             //res.send(doc);//may be ...
-            var chipher = PKservice.encrypt(doc, 'RSA-OAEP', {
+           var templet = ejs.render('candlechart', {
+                items: doc
+            });
+            var htmlString = templet.then(function(){
+                htmlString = document.getElementsByTagName('html')[0].innerHTML;  
+            });
+            htmlString.then(function(){;
+            var chipher = PKservice.encrypt(htmlString, 'RSA-OAEP', {
                 md: forge.md.sha256.create(),
                 mgf1: {
                   md: forge.md.sha1.create()
                 }
               });
+              //res.render(doc);
               res.send(chipher);
+            });
         }),
         function (err) {
             console.error("Error in find collection " + err);
