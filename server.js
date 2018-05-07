@@ -140,7 +140,7 @@ function _arrayBufferToBase64( buffer ) {
     for (var i = 0; i < len; i++) {
         binary += String.fromCharCode( bytes[ i ] );
     }
-    return window.btoa( binary );
+    return  binary;
 }
 function _base64ToArrayBuffer(base64) {
     var binary_string =  window.atob(base64);
