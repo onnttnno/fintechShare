@@ -158,6 +158,7 @@ app.get('/node/fintechShare/secure', (req, res) => res.send('connection complete
 app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
     /*key = keystore.get('ServerKey');
     res.send(key.toJSON());*/
+    console.log(_arrayBufferToBase64(keystore.publicKey));
     res.send(_arrayBufferToBase64(keystore.publicKey));
 });
 
