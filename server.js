@@ -24,6 +24,7 @@ forge.rsa.generateKeyPair({bits: 2048, workers: -1}, function(err, keypair) {
     kdf1 = new forge.kem.kdf1(forge.md.sha1.create());
     kem = forge.kem.rsa.create(kdf1);
     encap = kem.encrypt(keypair.publicKey, 16);
+    console.log('generate key completed');
   });
 //client side
 var PKservice;
@@ -133,25 +134,7 @@ keystore.generate("oct", 1024, props).
 then(function (result) {
     console.log(result);
 });*/
-//check connection
-function _arrayBufferToBase64( buffer ) {
-    var binary = '';
-    var bytes = new Uint8Array( buffer );
-    var len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode( bytes[ i ] );
-    }
-    return  binary;
-}
-function _base64ToArrayBuffer(base64) {
-    var binary_string =  window.atob(base64);
-    var len = binary_string.length;
-    var bytes = new Uint8Array( len );
-    for (var i = 0; i < len; i++)        {
-        bytes[i] = binary_string.charCodeAt(i);
-    }
-    return bytes.buffer;
-}
+
 
 app.get('/node/fintechShare/secure', (req, res) => res.send('connection completed!'))
 
@@ -162,7 +145,7 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
    // console.log(_arrayBufferToBase64(keystore.publicKey));
    // convert a Forge public key to PEM-format
     var pem = pki.publicKeyToPem(keystore.publicKey);
-    console.log(pem)
+    console.log(pem);
     res.send(keystore.publicKey);
 });
 
