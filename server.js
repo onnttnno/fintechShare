@@ -12,6 +12,7 @@ const port = process.env.PORT || 3000;
 //mongo lib
 
 var forge = require('node-forge');
+var pki = forge.pki;
 forge.options.usePureJavaScript = true;
 ///serverside
 var kdf1;
@@ -159,7 +160,9 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
     /*key = keystore.get('ServerKey');
     res.send(key.toJSON());*/
    // console.log(_arrayBufferToBase64(keystore.publicKey));
-    res.send(keystore.publicKey);
+   // convert a Forge public key to PEM-format
+    var pem = pki.publicKeyToPem(keystore.publicKey);
+    res.send(pem);
 });
 
 //hand shake
