@@ -138,7 +138,8 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
     // convert a Forge public key to PEM-format
     // generate a keypair and create an X.509v3 certificate
     var keys = pki.rsa.generateKeyPair(2048);
-    keystore = key;
+    keystore = keys;
+    console.info(pki.publicKeyToPem(keystore.publicKey));
     res.send(pki.publicKeyToPem(keystore.publicKey));
 
 });
