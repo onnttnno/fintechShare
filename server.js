@@ -21,9 +21,6 @@ var encap;
 forge.rsa.generateKeyPair({bits: 2048, workers: -1}, function(err, keypair) {
     // keypair.privateKey, keypair.publicKey
     keystore = keypair;
-    kdf1 = new forge.kem.kdf1(forge.md.sha1.create());
-    kem = forge.kem.rsa.create(kdf1);
-    encap = kem.encrypt(keypair.publicKey, 16);
     console.log('generate key completed');
   });
 //client side
@@ -146,7 +143,7 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
    // convert a Forge public key to PEM-format
     var pem = pki.publicKeyToPem(keystore.publicKey);
     console.log(pem);
-    res.send(keystore.publicKey);
+    res.send('test');
 });
 
 //hand shake
