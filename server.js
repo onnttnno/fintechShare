@@ -162,7 +162,8 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
    // console.log(_arrayBufferToBase64(keystore.publicKey));
    // convert a Forge public key to PEM-format
     var pem = pki.publicKeyToPem(keystore.publicKey);
-    res.send(pem);
+    console.log(pem)
+    res.send(keystore.publicKey);
 });
 
 //hand shake
