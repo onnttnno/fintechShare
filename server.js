@@ -18,14 +18,9 @@ forge.options.usePureJavaScript = true;
 var kdf1;
 var kem;
 var encap;
-forge.rsa.generateKeyPair({bits: 2048, workers: -1}, function(err, keypair) {
-    // keypair.privateKey, keypair.publicKey
-    keystore = keypair;
-    console.log('generate key completed');
-  });
 //client side
 var PKservice;
-
+var cert;
 app.use(bodyParser.json({
     limit: '50mb'
 }));
@@ -139,11 +134,100 @@ app.get('/node/fintechShare/secure', (req, res) => res.send('connection complete
 app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
     /*key = keystore.get('ServerKey');
     res.send(key.toJSON());*/
-   // console.log(_arrayBufferToBase64(keystore.publicKey));
-   // convert a Forge public key to PEM-format
-    var pem = pki.publicKeyToPem(keystore.publicKey);
-    console.log(pem);
-    res.send('test');
+    // console.log(_arrayBufferToBase64(keystore.publicKey));
+    // convert a Forge public key to PEM-format
+    // generate a keypair and create an X.509v3 certificate
+    var keys = pki.rsa.generateKeyPair(2048);
+    cert = pki.createCertificate();
+    cert.publicKey = keys.publicKey;
+    // alternatively set public key from a csr
+    //cert.publicKey = csr.publicKey;
+    cert.serialNumber = '01';
+    cert.validity.notBefore = new Date();
+    cert.validity.notAfter = new Date();
+    cert.validity.notAfter.setFullYear(cert.validity.notBefore.getFullYear() + 1);
+    var attrs = [{
+        name: 'commonName',
+        value: '110.164.179.154'
+    }, {
+        name: 'countryName',
+        value: 'TH'
+    }, {
+        shortName: 'SR',
+        value: 'Patthaya'
+    }, {
+        name: 'localityName',
+        value: 'TU-Patthaya'
+    }, {
+        name: 'organizationName',
+        value: 'Test'
+    }, {
+        shortName: 'OU',
+        value: 'Test'
+    }];
+    cert.setSubject(attrs);
+    // alternatively set subject from a csr
+    //cert.setSubject(csr.subject.attributes);
+    cert.setIssuer(attrs);
+    cert.setExtensions([{
+        name: 'basicConstraints',
+        cA: true
+    }, {
+        name: 'keyUsage',
+        keyCertSign: true,
+        digitalSignature: true,
+        nonRepudiation: true,
+        keyEncipherment: true,
+        dataEncipherment: true
+    }, {
+        name: 'extKeyUsage',
+        serverAuth: true,
+        clientAuth: true,
+        codeSigning: true,
+        emailProtection: true,
+        timeStamping: true
+    }, {
+        name: 'nsCertType',
+        client: true,
+        server: true,
+        email: true,
+        objsign: true,
+        sslCA: true,
+        emailCA: true,
+        objCA: true
+    }, {
+        name: 'subjectAltName',
+        altNames: [{
+            type: 6, // URI
+            value: 'http://110.164.179.154/'
+        }, {
+            type: 7, // IP
+            ip: '110.164.179.154'
+        }]
+    }, {
+        name: 'subjectKeyIdentifier'
+    }]);
+    /* alternatively set extensions from a csr
+    var extensions = csr.getAttribute({name: 'extensionRequest'}).extensions;
+    // optionally add more extensions
+    extensions.push.apply(extensions, [{
+      name: 'basicConstraints',
+      cA: true
+    }, {
+      name: 'keyUsage',
+      keyCertSign: true,
+      digitalSignature: true,
+      nonRepudiation: true,
+      keyEncipherment: true,
+      dataEncipherment: true
+    }]);
+    cert.setExtensions(extensions);
+    */
+    // self-sign certificate
+    cert.sign(keys.privateKey);
+    keystore = key;
+    res.send(pki.certificateToPem(cert));
+
 });
 
 //hand shake
@@ -190,24 +274,24 @@ app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
         });
     });
     */
-   
-    var chipher =('body: ', req.body.cypher);
-   // chipher =_base64ToArrayBuffer(chipher);
+
+    var chipher = ('body: ', req.body.cypher);
+    // chipher =_base64ToArrayBuffer(chipher);
     var decrypted = keystore.privateKey.decrypt(chipher, 'RSA-OAEP', {
         md: forge.md.sha256.create(),
         mgf1: {
-          md: forge.md.sha1.create()
+            md: forge.md.sha1.create()
         }
-      });
-     PKservice = decrypted;
+    });
+    PKservice = decrypted;
 
-     var encrypted = PKservice.encrypt(unpack('handShake success'), 'RSA-OAEP', {
+    var encrypted = PKservice.encrypt(unpack('handShake success'), 'RSA-OAEP', {
         md: forge.md.sha256.create(),
         mgf1: {
-          md: forge.md.sha1.create()
+            md: forge.md.sha1.create()
         }
-      });
-      res.send(encrypted);
+    });
+    res.send(encrypted);
 });
 
 //save
@@ -273,9 +357,9 @@ app.get('/node/fintechShare/secure/load/:cypher', function (req, res) {
     var data = keystore.privateKey.decrypt(cypher, 'RSA-OAEP', {
         md: forge.md.sha256.create(),
         mgf1: {
-          md: forge.md.sha1.create()
+            md: forge.md.sha1.create()
         }
-      });
+    });
     shareModel.find({
         "_id": data
     }, function (err, data) {
@@ -383,21 +467,21 @@ function findNowSpacific(getCollectionStock, res, start, end) {
                  res.send(res);
              });*/
             //res.send(doc);//may be ...
-           var templet = ejs.render('candlechart', {
+            var templet = ejs.render('candlechart', {
                 items: doc
             });
-            var htmlString = templet.then(function(){
-                htmlString = document.getElementsByTagName('html')[0].innerHTML;  
+            var htmlString = templet.then(function () {
+                htmlString = document.getElementsByTagName('html')[0].innerHTML;
             });
-            htmlString.then(function(){;
-            var chipher = PKservice.encrypt(htmlString, 'RSA-OAEP', {
-                md: forge.md.sha256.create(),
-                mgf1: {
-                  md: forge.md.sha1.create()
-                }
-              });
-              //res.render(doc);
-              res.send(chipher);
+            htmlString.then(function () {;
+                var chipher = PKservice.encrypt(htmlString, 'RSA-OAEP', {
+                    md: forge.md.sha256.create(),
+                    mgf1: {
+                        md: forge.md.sha1.create()
+                    }
+                });
+                //res.render(doc);
+                res.send(chipher);
             });
         }),
         function (err) {
@@ -487,7 +571,7 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
                     console.log('Item inserted');
                     console.log(item);
                     res.send(item.id);
-                    
+
                 }, err => {
                     console.error('Item inserted Error' + err);
                     res.status(500).send(err.message);
@@ -497,9 +581,10 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
             res.status(400).send('ticket undified');
     }
 });
+
 function pack(bytes) {
     var chars = [];
-    for(var i = 0, n = bytes.length; i < n;) {
+    for (var i = 0, n = bytes.length; i < n;) {
         chars.push(((bytes[i++] & 0xff) << 8) | (bytes[i++] & 0xff));
     }
     return String.fromCharCode.apply(null, chars);
@@ -507,7 +592,7 @@ function pack(bytes) {
 
 function unpack(str) {
     var bytes = [];
-    for(var i = 0, n = str.length; i < n; i++) {
+    for (var i = 0, n = str.length; i < n; i++) {
         var char = str.charCodeAt(i);
         bytes.push(char >>> 8, char & 0xFF);
     }
