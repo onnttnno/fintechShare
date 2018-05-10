@@ -189,7 +189,7 @@ app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
     });
     */
 
-    var chipher = ('body: ', req.body.cypher);
+    var chipher = ('body: ', req.params.cypher);
     console.log(chipher);
     // chipher =_base64ToArrayBuffer(chipher);
     var decrypted = keystore.privateKey.decrypt(chipher, 'RSAES-PKCS1-V1_5', {
