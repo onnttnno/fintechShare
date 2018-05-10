@@ -443,7 +443,10 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
                             md: forge.md.sha1.create()
                         }
                     });
-                    res.send(chipher);
+                    chipher.then(function(){
+                        res.send(chipher);
+                    });
+                    
 
                 }, err => {
                     console.error('Item inserted Error' + err);
