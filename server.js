@@ -147,7 +147,7 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
 //hand shake
 app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     var chipher = req.body;
-    console.log("hand shake request data  "+JSON.stringify(chipher));
+    console.log("hand shake request data  "+Object.keys(chipher));
     // chipher =_base64ToArrayBuffer(chipher);
     var decrypted = keystore.privateKey.decrypt(chipher.data, 'RSAES-PKCS1-V1_5', {
         md: forge.md.sha256.create(),
