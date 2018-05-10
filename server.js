@@ -191,7 +191,7 @@ app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
 
     var chipher = ('body: ', req.body.cypher);
     // chipher =_base64ToArrayBuffer(chipher);
-    var decrypted = keystore.privateKey.decrypt(chipher, 'RSA-OAEP', {
+    var decrypted = keystore.privateKey.decrypt(chipher, 'RSAES-PKCS1-V1_5', {
         md: forge.md.sha256.create(),
         mgf1: {
             md: forge.md.sha1.create()
@@ -199,7 +199,7 @@ app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
     });
     PKservice = decrypted;
 
-    var encrypted = PKservice.encrypt(unpack('handShake success'), 'RSA-OAEP', {
+    var encrypted = PKservice.encrypt(unpack('handShake success'), 'RSAES-PKCS1-V1_5', {
         md: forge.md.sha256.create(),
         mgf1: {
             md: forge.md.sha1.create()
