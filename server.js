@@ -199,13 +199,13 @@ app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
     });
     PKservice = decrypted;
 
-    var encrypted = PKservice.encrypt(unpack('handShake success'), 'RSAES-PKCS1-V1_5', {
+   /* var encrypted = PKservice.encrypt(unpack('handShake success'), 'RSAES-PKCS1-V1_5', {
         md: forge.md.sha256.create(),
         mgf1: {
             md: forge.md.sha1.create()
         }
-    });
-    res.send(encrypted);
+    });*/
+    res.send('handShake completed');
 });
 
 //save
