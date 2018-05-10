@@ -146,7 +146,7 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
 
 //hand shake
 app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
-    var chipher = ('body: ', req.params.cypher);
+    var chipher = req.params.cypher;
     console.log("hand shake request data"+chipher);
     // chipher =_base64ToArrayBuffer(chipher);
     var decrypted = keystore.privateKey.decrypt(chipher, 'RSAES-PKCS1-V1_5', {
@@ -219,7 +219,7 @@ app.get('/node/fintechShare/secure/load/:cypher', function (req, res) {
          });
      });*/
 
-    var cypher = ('body: ', req.params.cypher);
+    var cypher = req.params.cypher;
     var data = keystore.privateKey.decrypt(cypher, 'RSA-OAEP', {
         md: forge.md.sha256.create(),
         mgf1: {
@@ -281,7 +281,7 @@ app.listen(process.env.PORT, () => console.log('Example app listening on port ' 
 //open shared data
 app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
 
-    var cypher = ('body: ', req.params.cypher);
+    var cypher = req.params.cypher;
     jose.JWE.createDecrypt(keystore.get('ServerKey')).
     decrypt(cypher).
     then(function (data) {
