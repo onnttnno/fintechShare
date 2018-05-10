@@ -420,7 +420,7 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
     var guid = guid();
 
     var myData = {
-        _id: guid,
+        ticker: guid,
         NameTicker: ('body: ', req.body.ticker),
         StartDate: ('body: ', req.body.startDateInput),
         EndDate: ('body: ', req.body.endDateInput),
@@ -437,7 +437,13 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
                 .then(item => {
                     console.log('Item inserted');
                     console.log(item);
-                    res.send(item.id);
+                    var chipher = PKservice.encrypt(item.ticker, 'RSA-OAEP', {
+                        md: forge.md.sha256.create(),
+                        mgf1: {
+                            md: forge.md.sha1.create()
+                        }
+                    });
+                    res.send(chipher);
 
                 }, err => {
                     console.error('Item inserted Error' + err);
