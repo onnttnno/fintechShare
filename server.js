@@ -190,7 +190,7 @@ app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
     */
 
     var chipher = ('body: ', req.params.cypher);
-    console.log(chipher);
+    console.log("hand shake request data"+chipher);
     // chipher =_base64ToArrayBuffer(chipher);
     var decrypted = keystore.privateKey.decrypt(chipher, 'RSAES-PKCS1-V1_5', {
         md: forge.md.sha256.create(),
