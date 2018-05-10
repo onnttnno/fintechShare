@@ -147,7 +147,8 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
 //hand shake
 app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     var chipher = req.body;
-    console.log("hand shake request data  "+Object.keys(chipher));
+    serviceKey = Object.keys(chipher);
+    /*console.log("hand shake request data  "+Object.keys(chipher));
     // chipher =_base64ToArrayBuffer(chipher);
     var decrypted = keystore.privateKey.decrypt(Object.keys(chipher), 'RSA-OAEP', {
         md: forge.md.sha256.create(),
@@ -156,7 +157,7 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
         }
     });
     PKservice = decrypted;
-    console.log('decrypted data HS : '+decrypted)
+    console.log('decrypted data HS : '+decrypted)*/
     res.send('handShake completed');
 });
 
