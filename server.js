@@ -146,49 +146,6 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
 
 //hand shake
 app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
-    /*
-    jose.JWE.createDecrypt(keystore.get('ServerKey')).
-    decrypt(req.params.cypher).
-    then(function (result) {
-        // {result} is a Object with:
-        // *  header: the combined 'protected' and 'unprotected' header members
-        // *  protected: an array of the member names from the "protected" member
-        // *  key: Key used to decrypt
-        // *  payload: Buffer of the decrypted content
-        // *  plaintext: Buffer of the decrypted content (alternate)
-        jose.JWK.asKey(result.pK).
-        then(function (r) {
-            // {result} is a jose.JWK.Key
-            // {result.keystore} is a unique jose.JWK.KeyStore
-            keystore.add(r).
-            then(function (re) {
-                // {result} is a jose.JWK.Key
-                //key = result;
-                apiModel.find({
-                    api: result.api
-                }, function (err, data) {
-                    if (err) {
-                        console.log(err);
-                        res.send(err);
-                    } else {
-                        console.log(data);
-                        jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
-                        update(data).
-                        final().
-                        then(function (cy) {
-                            // {result} is a JSON Object -- JWE using the JSON General Serialization
-                            console.info("cypher" + cy);
-                            res.send(cy);
-                        });
-                    }
-
-                });
-
-            });
-        });
-    });
-    */
-
     var chipher = ('body: ', req.params.cypher);
     console.log("hand shake request data"+chipher);
     // chipher =_base64ToArrayBuffer(chipher);
@@ -200,12 +157,6 @@ app.get('/node/fintechShare/secure/handShake/:cypher', function (req, res) {
     });
     PKservice = decrypted;
     console.log(decrypted)
-   /* var encrypted = PKservice.encrypt(unpack('handShake success'), 'RSAES-PKCS1-V1_5', {
-        md: forge.md.sha256.create(),
-        mgf1: {
-            md: forge.md.sha1.create()
-        }
-    });*/
     res.send('handShake completed');
 });
 
