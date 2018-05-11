@@ -221,6 +221,7 @@ app.get('/node/fintechShare/secure/load/:cypher', function (req, res) {
      });*/
 
     var cypher = req.params.cypher;
+    console.info("cypher load : "+cypher);
     var data = keystore.privateKey.decrypt(cypher, 'RSA-OAEP', {
         md: forge.md.sha256.create(),
         mgf1: {
