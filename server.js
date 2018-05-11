@@ -151,13 +151,14 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
 //hand shake
 app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     var chipher = req.body;
-    var cypher =  pki.publicKeyFromPem(Object.keys(chipher));
+    console.log(chipher);
+    /* var cypher =  pki.publicKeyFromPem(Object.keys(chipher));
     var decrypted = keystore.privateKey.decrypt(cypher, 'RSA-OAEP', {
         md: forge.md.sha256.create(),
     });
     console.log(decrypted);
     var json = JSON.parse(decrypted);
-
+    */
     /*console.log("hand shake request data  "+Object.keys(chipher));
     // chipher =_base64ToArrayBuffer(chipher);
     var decrypted = keystore.privateKey.decrypt(Object.keys(chipher), 'RSA-OAEP', {
