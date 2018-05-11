@@ -152,6 +152,10 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
 app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     var chipher = req.body;
     console.log(chipher);
+    var decrypted = keystore.privateKey.decrypt(Object.keys(chipher), 'RSA-OAEP', {
+        md: forge.md.sha256.create(),
+    });
+    console.log(decrypted);
     /* var cypher =  pki.publicKeyFromPem(Object.keys(chipher));
     var decrypted = keystore.privateKey.decrypt(cypher, 'RSA-OAEP', {
         md: forge.md.sha256.create(),
