@@ -140,6 +140,10 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
     var keys = pki.rsa.generateKeyPair(2048);
     keystore = keys;
     console.info(pki.publicKeyToPem(keystore.publicKey));
+    var key = forge.random.getBytesSync(16);
+    var iv = forge.random.getBytesSync(16);
+    keystore.aesKey= key;
+    keystore.aesIV=iv;
     res.send(pki.publicKeyToPem(keystore.publicKey));
 
 });
@@ -147,7 +151,13 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
 //hand shake
 app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     var chipher = req.body;
-    serviceKey = Object.keys(chipher);
+    var cypher =  pki.publicKeyFromPem(Object.keys(chipher));
+    var decrypted = keystore.privateKey.decrypt(cypher, 'RSA-OAEP', {
+        md: forge.md.sha256.create(),
+    });
+    console.log(decrypted);
+    var json = JSON.parse(decrypted);
+
     /*console.log("hand shake request data  "+Object.keys(chipher));
     // chipher =_base64ToArrayBuffer(chipher);
     var decrypted = keystore.privateKey.decrypt(Object.keys(chipher), 'RSA-OAEP', {
@@ -201,7 +211,7 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     console.info("cypher load : "+cypher);
     var buf = Buffer.from(cypher,'base64');
     console.info("cypher byte : " +buf);
-    console.log(keystore.privateKey.decrypt(buf, 'RSA-OAEP'))
+    console.log(pki.keystore.privateKey);
     var data = keystore.privateKey.decrypt(buf, 'RSA-OAEP');
     shareModel.find({
         "Ticket": data
