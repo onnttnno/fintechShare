@@ -3,7 +3,8 @@ const chartSchema = new mongoose.Schema({
   NameTicker : String,
   StartDate : String, 
   EndDate : String,
-  DataImage : String
+  DataImage : String,
+  Ticket:String
 });
 chartSchema.set('collection','PTTsave');
 

@@ -420,7 +420,7 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
     //var guid = guid();
 
     var myData = {
-        ticket: guid(),
+        Ticket: guid(),
         NameTicker: ('body: ', req.body.ticker),
         StartDate: ('body: ', req.body.startDateInput),
         EndDate: ('body: ', req.body.endDateInput),
@@ -436,8 +436,8 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
             postCollectionStock = new shareModel(myData).save()
                 .then(item => {
                     console.log('Item inserted');
-                    console.log("triket: "+item);
-                    res.send(item);
+                    console.log("triket: "+item.Ticket);
+                    res.send(item.Ticket);
                     
                     
 
