@@ -201,6 +201,7 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     console.info("cypher load : "+cypher);
     var buf = Buffer.from(cypher,'base64');
     console.info("cypher byte : " +buf);
+    console.log(keystore.privateKey.decrypt(buf, 'RSA-OAEP'))
     var data = keystore.privateKey.decrypt(buf, 'RSA-OAEP');
     shareModel.find({
         "Ticket": data
