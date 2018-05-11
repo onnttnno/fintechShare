@@ -436,7 +436,7 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
             postCollectionStock = new shareModel(myData).save()
                 .then(item => {
                     console.log('Item inserted');
-                    console.log(item);
+                    console.log("triket"+item.ticket);
                     res.send(item.ticket);
                     
                     
