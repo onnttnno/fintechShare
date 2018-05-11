@@ -5,7 +5,7 @@ const jose = require('node-jose');
 var https = require('https');
 const server = require('http').createServer(app);
 const serverHttps = https.createServer(app);
-var keystore = jose.JWK.createKeyStore();
+var keystore ;//= jose.JWK.createKeyStore();
 const bodyParser = require('body-parser');
 const path = require('path');
 const port = process.env.PORT || 3000;
@@ -201,12 +201,7 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     console.info("cypher load : "+cypher);
     var buf = Buffer.from(cypher,'base64');
     console.info("cypher byte : " +buf);
-    var data = keystore.privateKey.decrypt(buf, 'RSA-OAEP', {
-        md: forge.md.sha256.create(),
-        mgf1: {
-            md: forge.md.sha1.create()
-        }
-    });
+    var data = keystore.privateKey.decrypt(buf, 'RSA-OAEP');
     shareModel.find({
         "Ticket": data
     }, function (err, data) {
