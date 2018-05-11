@@ -195,32 +195,9 @@ app.post('/save', function (req, res) {
 });
 
 //load img adn data
-app.get('/node/fintechShare/secure/load/:cypher', function (req, res) {
-    // res.send('example data');
-    /* var cypher = ('body: ', req.params.cypher);
-     jose.JWE.createDecrypt(keystore.get('ServerKey')).
-     decrypt(cypher).
-     then(function (result) {
-
-         shareModel.findOne({
-             "id": result.id
-         }, function (err, data) {
-             if (err) return res.status(400).send('Error not found data in DB: ' + err);
-             // Prints "Space Ghost is a talk show host".
-             else {
-                 console.log(data);
-                 jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
-                 update(data).
-                 final().
-                 then(function (res) {
-                     // {result} is a JSON Object -- JWE using the JSON General Serialization
-                     res.send(res);
-                 });
-             }
-         });
-     });*/
-
-    var cypher = req.params.cypher;
+app.post('/node/fintechShare/secure/load/', function (req, res) {
+    var chipher = req.body;
+    var cypher = Object.keys(chipher);
     console.info("cypher load : "+cypher);
     var data = keystore.privateKey.decrypt(cypher, 'RSA-OAEP', {
         md: forge.md.sha256.create(),
@@ -229,7 +206,7 @@ app.get('/node/fintechShare/secure/load/:cypher', function (req, res) {
         }
     });
     shareModel.find({
-        "_id": data
+        "Ticket": data
     }, function (err, data) {
         if (err) return res.status(400).send('Error not found data in DB: ' + err);
         // Prints "Space Ghost is a talk show host".
