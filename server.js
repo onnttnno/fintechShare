@@ -417,10 +417,10 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
-    var guid = guid();
+    //var guid = guid();
 
     var myData = {
-        ticket: guid,
+        ticket: guid(),
         NameTicker: ('body: ', req.body.ticker),
         StartDate: ('body: ', req.body.startDateInput),
         EndDate: ('body: ', req.body.endDateInput),
@@ -436,7 +436,7 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
             postCollectionStock = new shareModel(myData).save()
                 .then(item => {
                     console.log('Item inserted');
-                    console.log("triket"+item.ticket);
+                    console.log("triket: "+item.ticket);
                     res.send(item.ticket);
                     
                     
