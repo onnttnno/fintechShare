@@ -199,7 +199,9 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     var chipher = req.body;
     var cypher = Object.keys(chipher);
     console.info("cypher load : "+cypher);
-    var data = keystore.privateKey.decrypt(cypher, 'RSA-OAEP', {
+    var buf = Buffer.from(cypher,'base64');
+    console.info("cypher byte : " +buf);
+    var data = keystore.privateKey.decrypt(buf, 'RSA-OAEP', {
         md: forge.md.sha256.create(),
         mgf1: {
             md: forge.md.sha1.create()
@@ -318,7 +320,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             var htmlString = templet.then(function () {
                 htmlString = document.getElementsByTagName('html')[0].innerHTML;
             });
-            htmlString.then(function () {;
+            htmlString.then(function () {
                 var chipher = PKservice.encrypt(htmlString, 'RSA-OAEP', {
                     md: forge.md.sha256.create(),
                     mgf1: {
