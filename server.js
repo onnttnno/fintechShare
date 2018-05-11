@@ -437,7 +437,7 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
                 .then(item => {
                     console.log('Item inserted');
                     console.log("triket: "+item.ticket);
-                    res.send(item.ticket);
+                    res.send(item);
                     
                     
 
