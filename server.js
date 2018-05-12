@@ -163,7 +163,7 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     console.log("decypted data "+typeof decrypted  +" : "+decrypted);
 */
     var chipher = req.body;
-    console.log("log data : " + chipher);
+    console.log("log data : " + JSON.stringify(chipher));
     console.log("1st point"+Object.keys(chipher)[0]);
     //var data = Buffer.from(Object.keys(chipher)[0], 'base64');
     //var forgeBuffer = forge.util.createBuffer(data.toString('base64'));
