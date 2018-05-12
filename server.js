@@ -156,10 +156,10 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     var binaryString = buffer.getBytes();
     console.log("raw data : "+message);
     // encrypt data with a public key using RSAES-OAEP
-    var encrypted = publicKey.encrypt(binaryString, 'RSA-OAEP');
+    var encrypted = keystore.publicKey.encrypt(binaryString, 'RSA-OAEP');
     console.log("cypher data "+typeof encrypted  +" : "+encrypted);
     // decrypt data with a private key using RSAES-OAEP
-    var decrypted = privateKey.decrypt(encrypted, 'RSA-OAEP');
+    var decrypted = keystore.privateKey.decrypt(encrypted, 'RSA-OAEP');
     console.log("decypted data "+typeof decrypted  +" : "+decrypted);
 
     var chipher = req.body;
