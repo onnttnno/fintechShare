@@ -5,7 +5,7 @@ const jose = require('node-jose');
 var https = require('https');
 const server = require('http').createServer(app);
 const serverHttps = https.createServer(app);
-var keystore ;//= jose.JWK.createKeyStore();
+var keystore; //= jose.JWK.createKeyStore();
 const bodyParser = require('body-parser');
 const path = require('path');
 const port = process.env.PORT || 3000;
@@ -142,18 +142,32 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
     console.info(pki.publicKeyToPem(keystore.publicKey));
     var key = forge.random.getBytesSync(16);
     var iv = forge.random.getBytesSync(16);
-    keystore.aesKey= key;
-    keystore.aesIV=iv;
+    keystore.aesKey = key;
+    keystore.aesIV = iv;
     res.send(pki.publicKeyToPem(keystore.publicKey));
 
 });
 
 //hand shake
 app.post('/node/fintechShare/secure/handShake/', function (req, res) {
+    console.info('test encrypted');
+    var message = 'abc';
+    var buffer = forge.util.createBuffer(message, 'utf8');
+    var binaryString = buffer.getBytes();
+    console.log("raw data : "+message);
+    // encrypt data with a public key using RSAES-OAEP
+    var encrypted = publicKey.encrypt(binaryString, 'RSA-OAEP');
+    console.log("cypher data "+typeof encrypted  +" : "+encrypted);
+    // decrypt data with a private key using RSAES-OAEP
+    var decrypted = privateKey.decrypt(encrypted, 'RSA-OAEP');
+    console.log("decypted data "+typeof decrypted  +" : "+decrypted);
+
     var chipher = req.body;
     console.log(Object.keys(chipher)[0]);
-    var decrypted = keystore.privateKey.decrypt(Object.keys(chipher)[0], 'RSA-OAEP', {
-       // md: forge.md.sha256.create(),
+    var data = Buffer.from(Object.keys(chipher)[0], 'base64');
+    var forgeBuffer = forge.util.createBuffer(data.toString('base64'));
+    var decrypted = keystore.privateKey.decrypt(forgeBuffer.getByte(), 'RSA-OAEP', {
+        // md: forge.md.sha256.create(),
     });
     console.log(decrypted);
     /* var cypher =  pki.publicKeyFromPem(Object.keys(chipher));
@@ -213,9 +227,9 @@ app.post('/save', function (req, res) {
 app.post('/node/fintechShare/secure/load/', function (req, res) {
     var chipher = req.body;
     var cypher = Object.keys(chipher);
-    console.info("cypher load : "+cypher);
-    var buf = Buffer.from(cypher,'base64');
-    console.info("cypher byte : " +buf);
+    console.info("cypher load : " + cypher);
+    var buf = Buffer.from(cypher, 'base64');
+    console.info("cypher byte : " + buf);
     console.log(pki.keystore.privateKey);
     var data = keystore.privateKey.decrypt(buf, 'RSA-OAEP');
     shareModel.find({
@@ -427,10 +441,10 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
             postCollectionStock = new shareModel(myData).save()
                 .then(item => {
                     console.log('Item inserted');
-                    console.log("triket: "+item.Ticket);
+                    console.log("triket: " + item.Ticket);
                     res.send(item.Ticket);
-                    
-                    
+
+
 
                 }, err => {
                     console.error('Item inserted Error' + err);
