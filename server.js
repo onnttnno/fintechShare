@@ -150,7 +150,7 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
 
 //hand shake
 app.post('/node/fintechShare/secure/handShake/', function (req, res) {
-    console.info('test encrypted');
+/*    console.info('test encrypted');
     var message = 'abc';
     var buffer = forge.util.createBuffer(message, 'utf8');
     var binaryString = buffer.getBytes();
@@ -161,9 +161,10 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     // decrypt data with a private key using RSAES-OAEP
     var decrypted = keystore.privateKey.decrypt(encrypted, 'RSA-OAEP');
     console.log("decypted data "+typeof decrypted  +" : "+decrypted);
-
+*/
     var chipher = req.body;
-    console.log(Object.keys(chipher)[0]);
+    console.log("log data : " + chipher);
+    console.log("1st point"+Object.keys(chipher)[0]);
     //var data = Buffer.from(Object.keys(chipher)[0], 'base64');
     //var forgeBuffer = forge.util.createBuffer(data.toString('base64'));
     var decrypted = keystore.privateKey.decrypt(Object.keys(chipher)[0], 'RSA-OAEP');
