@@ -6,7 +6,7 @@ var https = require('https');
 const server = require('http').createServer(app);
 const serverHttps = https.createServer(app);
 
- //= jose.JWK.createKeyStore();
+//= jose.JWK.createKeyStore();
 const bodyParser = require('body-parser');
 const path = require('path');
 const port = process.env.PORT || 3000;
@@ -152,24 +152,24 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
 
 //hand shake
 app.post('/node/fintechShare/secure/handShake/', function (req, res) {
-/*    console.info('test encrypted');
-    var message = 'abc';
-    var buffer = forge.util.createBuffer(message, 'utf8');
-    var binaryString = buffer.getBytes();
-    console.log("raw data : "+message);
-    // encrypt data with a public key using RSAES-OAEP
-    var encrypted = keystore.publicKey.encrypt(binaryString, 'RSA-OAEP');
-    console.log("cypher data "+typeof encrypted  +" : "+encrypted);
-    // decrypt data with a private key using RSAES-OAEP
-    var decrypted = keystore.privateKey.decrypt(encrypted, 'RSA-OAEP');
-    console.log("decypted data "+typeof decrypted  +" : "+decrypted);
-*/
+    /*    console.info('test encrypted');
+        var message = 'abc';
+        var buffer = forge.util.createBuffer(message, 'utf8');
+        var binaryString = buffer.getBytes();
+        console.log("raw data : "+message);
+        // encrypt data with a public key using RSAES-OAEP
+        var encrypted = keystore.publicKey.encrypt(binaryString, 'RSA-OAEP');
+        console.log("cypher data "+typeof encrypted  +" : "+encrypted);
+        // decrypt data with a private key using RSAES-OAEP
+        var decrypted = keystore.privateKey.decrypt(encrypted, 'RSA-OAEP');
+        console.log("decypted data "+typeof decrypted  +" : "+decrypted);
+    */
     var chipher = req.body.cypher;
     console.log("log data : " + chipher);
     //var data = Buffer.from(Object.keys(chipher)[0], 'base64');
     //var forgeBuffer = forge.util.createBuffer(data.toString('base64'));
-    var decrypted = keystore.privateKey.decrypt( chipher, 'RSA-OAEP');
-    console.log("decypted data : "+forge.util.decodeUtf8(decrypted));
+    var decrypted = forge.util.decodeUtf8(keystore.privateKey.decrypt(chipher, 'RSA-OAEP'));
+    console.log("decypted data : " + decrypted);
     /* var cypher =  pki.publicKeyFromPem(Object.keys(chipher));
     var decrypted = keystore.privateKey.decrypt(cypher, 'RSA-OAEP', {
         md: forge.md.sha256.create(),
@@ -187,7 +187,29 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     });
     PKservice = decrypted;
     console.log('decrypted data HS : '+decrypted)*/
-    res.send('handShake completed');
+    keystore.serviceAesIV = decrypted.iv;
+    keystore.serviceAesKey = decrypted.key;
+    var json = {
+        'key': keystore.aesKey,
+        'iv': keystore.aesIV,
+        'status': "hand Shake completed"
+    };
+    var jsonStr = JSON.stringify(json)
+    var buffer = forge.util.encodeUtf8(jsonStr);
+
+    //encrypt
+    var cipher = forge.cipher.createCipher('AES-CBC', keystore.serviceAesKey);
+    cipher.start({
+        iv: keystore.serviceAesIV
+    });
+    cipher.update(forge.util.createBuffer(buffer));
+    cipher.finish();
+    var encrypted = cipher.output;
+    // outputs encrypted hex
+    encrypted.toHex();
+
+
+    res.send(encrypted.toHex());
 });
 
 //save
