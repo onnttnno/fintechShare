@@ -5,20 +5,23 @@ const jose = require('node-jose');
 var https = require('https');
 const server = require('http').createServer(app);
 const serverHttps = https.createServer(app);
-var keystore = pki.rsa.generateKeyPair(2048); //= jose.JWK.createKeyStore();
+
+ //= jose.JWK.createKeyStore();
 const bodyParser = require('body-parser');
 const path = require('path');
 const port = process.env.PORT || 3000;
 
 //for encypt
-keystore.aesKey = forge.random.getBytesSync(16);
-keystore.aesIV = forge.random.getBytesSync(16);
+
 
 //mongo lib
 
 var forge = require('node-forge');
 var pki = forge.pki;
 forge.options.usePureJavaScript = true;
+var keystore = pki.rsa.generateKeyPair(2048);
+keystore.aesKey = forge.random.getBytesSync(16);
+keystore.aesIV = forge.random.getBytesSync(16);
 ///serverside
 var kdf1;
 var kem;
