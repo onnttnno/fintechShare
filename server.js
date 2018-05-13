@@ -162,7 +162,7 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     var decrypted = keystore.privateKey.decrypt(encrypted, 'RSA-OAEP');
     console.log("decypted data "+typeof decrypted  +" : "+decrypted);
 */
-    var chipher = JSON.stringify(req.body.cypher);
+    var chipher = req.body.cypher;
     console.log("log data : " + chipher);
     
 
