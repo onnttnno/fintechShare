@@ -168,7 +168,7 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     console.log("log data : " + chipher);
     //var data = Buffer.from(Object.keys(chipher)[0], 'base64');
     //var forgeBuffer = forge.util.createBuffer(data.toString('base64'));
-    var decrypted = keystore.privateKey.decrypt(forge.util.decode64(chipher), 'RSA-OAEP');
+    var decrypted = keystore.privateKey.decrypt(new Buffer(chipher,'base64'), 'RSA-OAEP');
     console.log("decypted data : "+decrypted);
     /* var cypher =  pki.publicKeyFromPem(Object.keys(chipher));
     var decrypted = keystore.privateKey.decrypt(cypher, 'RSA-OAEP', {
