@@ -5,10 +5,15 @@ const jose = require('node-jose');
 var https = require('https');
 const server = require('http').createServer(app);
 const serverHttps = https.createServer(app);
-var keystore; //= jose.JWK.createKeyStore();
+var keystore = pki.rsa.generateKeyPair(2048); //= jose.JWK.createKeyStore();
 const bodyParser = require('body-parser');
 const path = require('path');
 const port = process.env.PORT || 3000;
+
+//for encypt
+keystore.aesKey = forge.random.getBytesSync(16);
+keystore.aesIV = forge.random.getBytesSync(16);
+
 //mongo lib
 
 var forge = require('node-forge');
@@ -137,13 +142,7 @@ app.get('/node/fintechShare/secure/getPublicKey', function (req, res) {
     // console.log(_arrayBufferToBase64(keystore.publicKey));
     // convert a Forge public key to PEM-format
     // generate a keypair and create an X.509v3 certificate
-    var keys = pki.rsa.generateKeyPair(2048);
-    keystore = keys;
     console.info(pki.publicKeyToPem(keystore.publicKey));
-    var key = forge.random.getBytesSync(16);
-    var iv = forge.random.getBytesSync(16);
-    keystore.aesKey = key;
-    keystore.aesIV = iv;
     res.send(pki.publicKeyToPem(keystore.publicKey));
 
 });
