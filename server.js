@@ -190,17 +190,15 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     keystore.serviceAesIV = decrypted.iv;
     keystore.serviceAesKey = decrypted.key;
     var json = {
-        'key': keystore.aesKey,
-        'iv': keystore.aesIV,
         'status': "hand Shake completed"
     };
     var jsonStr = JSON.stringify(json)
     var buffer = forge.util.encodeUtf8(jsonStr);
 
     //encrypt
-    var cipher = forge.cipher.createCipher('AES-CBC', forge.util.createBuffer(keystore.serviceAesKey, 'raw'));
+    var cipher = forge.cipher.createCipher('AES-CBC', keystore.serviceAesKey);
     cipher.start({
-        iv: forge.util.createBuffer(keystore.serviceAesIV, 'raw')
+        iv: keystore.serviceAesIV
     });
     cipher.update(forge.util.createBuffer(buffer));
     cipher.finish();
