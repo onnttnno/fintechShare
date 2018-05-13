@@ -20,8 +20,8 @@ var forge = require('node-forge');
 var pki = forge.pki;
 forge.options.usePureJavaScript = true;
 var keystore = pki.rsa.generateKeyPair(2048);
-keystore.aesKey = forge.random.getBytesSync(16);
-keystore.aesIV = forge.random.getBytesSync(16);
+keystore.aesKey = forge.random.getBytesSync(32);
+keystore.aesIV = forge.random.getBytesSync(32);
 ///serverside
 var kdf1;
 var kem;
@@ -198,9 +198,9 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     var buffer = forge.util.encodeUtf8(jsonStr);
 
     //encrypt
-    var cipher = forge.cipher.createCipher('AES-CBC', keystore.serviceAesKey);
+    var cipher = forge.cipher.createCipher('AES-CBC', forge.util.createBuffer(keystore.serviceAesKey, 'raw'));
     cipher.start({
-        iv: keystore.serviceAesIV
+        iv: forge.util.createBuffer(keystore.serviceAesIV, 'raw')
     });
     cipher.update(forge.util.createBuffer(buffer));
     cipher.finish();
