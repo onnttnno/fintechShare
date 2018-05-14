@@ -208,7 +208,7 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     cipher.start({
         iv: iv
     });
-    cipher.update(forge.util.createBuffer(data, 'binary'));
+    cipher.update(forge.util.createBuffer(data, 'raw'));
     cipher.finish();
 
     var output = forge.util.createBuffer();
@@ -263,9 +263,9 @@ app.post('/save', function (req, res) {
 app.post('/node/fintechShare/secure/load/', function (req, res) {
     var chipher = req.body.cypher;
 
-    console.info("cypher load : " + JSON.stringify(req.body));
+    console.info("cypher load : " + chipher);
 
-    var input = forge.util.createBuffer(chipher, 'binary');
+    var input = forge.util.createBuffer(chipher, 'raw');
     // skip "Salted__" (if known to be present)
     input.getBytes('Salted__'.length);
     // read 8-byte salt
