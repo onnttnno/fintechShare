@@ -170,6 +170,7 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     //var forgeBuffer = forge.util.createBuffer(data.toString('base64'));
     var decrypted = forge.util.decodeUtf8(keystore.privateKey.decrypt(chipher, 'RSA-OAEP'));
     console.log("decypted data : " + decrypted);
+    var jsondecrypted = JSON.parse(decrypted);
     /* var cypher =  pki.publicKeyFromPem(Object.keys(chipher));
     var decrypted = keystore.privateKey.decrypt(cypher, 'RSA-OAEP', {
         md: forge.md.sha256.create(),
@@ -187,9 +188,9 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     });
     PKservice = decrypted;
     console.log('decrypted data HS : '+decrypted)*/
-    keystore.service3DesIV = decrypted.iv;
-    keystore.service3DesKey = decrypted.key;
-    keystore.service3DesPWD = decrypted.pwd;
+    keystore.service3DesIV = jsondecrypted.iv;
+    keystore.service3DesKey = jsondecrypted.key;
+    keystore.service3DesPWD = jsondecrypted.pwd;
     var json = {
         'status': "hand Shake completed"
     };
