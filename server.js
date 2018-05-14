@@ -264,7 +264,7 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     var chipher = req.body.cypher;
 
     console.info("cypher load : " + chipher);
-
+    console.info(JSON.stringify(keystore));
     var input = forge.util.createBuffer(chipher, 'raw');
     // skip "Salted__" (if known to be present)
     input.getBytes('Salted__'.length);
