@@ -217,9 +217,10 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
       output.putBytes(salt);
     }
     output.putBuffer(cipher.output);
-    var cypher = forge.util.encodeUtf8( output.getBytes());
+    var cypher =  output.getBytes();
 
     console.log(cypher);
+    
     res.send(cypher);
 });
 
