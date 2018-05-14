@@ -187,27 +187,39 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     });
     PKservice = decrypted;
     console.log('decrypted data HS : '+decrypted)*/
-    keystore.serviceAesIV = decrypted.iv;
-    keystore.serviceAesKey = decrypted.key;
+    keystore.service3DesIV = decrypted.iv;
+    keystore.service3DesKey = decrypted.key;
+    keystore.service3DesPWD = decrypted.pwd;
     var json = {
         'status': "hand Shake completed"
     };
-    var jsonStr = JSON.stringify(json)
-    var buffer = forge.util.encodeUtf8(jsonStr);
 
-    //encrypt
-    var cipher = forge.cipher.createCipher('AES-CBC', keystore.serviceAesKey);
-    cipher.start({
-        iv: keystore.serviceAesIV
-    });
-    cipher.update(forge.util.createBuffer(buffer));
+    var salt = forge.random.getBytesSync(8);
+    // var md = forge.md.sha1.create(); // "-md sha1"
+    var derivedBytes = forge.pbe.opensslDeriveBytes(
+        keystore.service3DesPWD, salt, keystore.service3DesKey + keystore.service3DesIV/*, md*/);
+    
+    var buffer = forge.util.createBuffer(derivedBytes);
+    var key = buffer.getBytes(keystore.service3DesKey);
+    var iv = buffer.getBytes(keystore.service3DesIV);
+  
+    var cipher = forge.cipher.createCipher('3DES-CBC', key);
+    cipher.start({iv: iv});
+    cipher.update(forge.util.createBuffer(input, 'binary'));
     cipher.finish();
-    var encrypted = cipher.output;
-    // outputs encrypted hex
-    encrypted.toHex();
+  
+    var output = forge.util.createBuffer();
+  
+    // if using a salt, prepend this to the output:
+    if(salt !== null) {
+      output.putBytes('Salted__'); // (add to match openssl tool output)
+      output.putBytes(salt);
+    }
+    output.putBuffer(cipher.output);
+    var cypher = forge.util.encodeUtf8( output.getBytes());
 
-
-    res.send(encrypted.toHex());
+    console.log(cypher);
+    res.send(cypher);
 });
 
 //save
