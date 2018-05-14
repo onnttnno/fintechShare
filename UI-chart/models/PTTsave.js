@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const chartSchema = new mongoose.Schema({
   NameTicker : String,
-  StartDate : String, 
-  EndDate : String,
+  StartDate : Date, 
+  EndDate : Date,
   DataImage : String,
   Ticket:String
 });

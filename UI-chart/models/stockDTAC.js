@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const chartSchema = new mongoose.Schema({
-  Date : String, 
+  Date : Date, 
   Open : Number, 
   Heigh : Number, 
   Low : Number, 

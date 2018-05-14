@@ -226,38 +226,6 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     res.send(cypher);
 });
 
-//save
-app.post('/save', function (req, res) {
-    res.send('save complete');
-
-    jose.createDecrypt(keystore.get('gBdaS-G8RLax2qgObTD94w'))
-        .decrypt(req.body)
-        .then(function (result) {
-            var shareOBJ = new Data({
-                id: guid(),
-                data: result.data,
-                image: result.image
-            });
-
-            shareOBJ.save(function (err, r) {
-                if (err) {
-                    res.send('server save error');
-
-                } else {
-                    shareOBJ.save(function (err, shareOBJ) {
-                        if (err) return console.error(err);
-                        jose.JWE.createEncrypt(keystore.get('gBdaS-G8RLax2qgObTD94w')).
-                        update(shareOBJ.id).
-                        final().
-                        then(function (result) {
-                            // {result} is a JSON Object -- JWE using the JSON General Serialization
-                            res.send(result);
-                        });
-                    });
-                }
-            });
-        });
-});
 
 //load img adn data
 app.post('/node/fintechShare/secure/load/', function (req, res) {
@@ -288,12 +256,12 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     var ticket = decipher.output.getBytes();
 
     shareModel.find({
-        "Ticket": ticket
+        Ticket: ticket
     }, function (err, data) {
         if (err) return res.status(400).send('Error not found data in DB: ' + err);
         // Prints "Space Ghost is a talk show host".
         else {
-            console.log("Object here : "+data);
+            console.log("Object here : "+JSON.stringify( data));
             /*jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
             update(data).
             final().
@@ -383,7 +351,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             "_id": 0
         }).where('Date').gt(start).lt(end)
         .then(function (doc) {
-
+            console.log('data model: '+JSON.stringify(doc));
             //res.render('candlechart', { items: doc });
             //res.send(doc);
             /* jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
@@ -511,8 +479,8 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
     var myData = {
         Ticket: guid(),
         NameTicker: ('body: ', req.body.ticker),
-        StartDate: ('body: ', req.body.startDateInput),
-        EndDate: ('body: ', req.body.endDateInput),
+        StartDate: new Date( ('body: ', req.body.startDateInput)),
+        EndDate: new Date( ('body: ', req.body.endDateInput)),
         DataImage: ('body: ', req.body.img)
     }
 
