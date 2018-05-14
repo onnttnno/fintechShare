@@ -194,7 +194,7 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     var json = {
         'status': "hand Shake completed"
     };
-
+    var data = JSON.stringify(json);
     var salt = forge.random.getBytesSync(8);
     // var md = forge.md.sha1.create(); // "-md sha1"
     var derivedBytes = forge.pbe.opensslDeriveBytes(
@@ -206,7 +206,7 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
   
     var cipher = forge.cipher.createCipher('3DES-CBC', key);
     cipher.start({iv: iv});
-    cipher.update(forge.util.createBuffer(input, 'binary'));
+    cipher.update(forge.util.createBuffer(data, 'binary'));
     cipher.finish();
   
     var output = forge.util.createBuffer();
