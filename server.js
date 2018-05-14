@@ -285,15 +285,15 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     var result = decipher.finish();
 
     console.log("decrypted data"+decipher.output.getBytes());
-    var data = decipher.output.getBytes();
+    var ticket = decipher.output.getBytes();
 
     shareModel.find({
-        "Ticket": data
+        "Ticket": ticket
     }, function (err, data) {
         if (err) return res.status(400).send('Error not found data in DB: ' + err);
         // Prints "Space Ghost is a talk show host".
         else {
-            console.log(data);
+            console.log("Object here : "+data);
             /*jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
             update(data).
             final().
