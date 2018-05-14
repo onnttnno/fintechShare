@@ -198,29 +198,31 @@ app.post('/node/fintechShare/secure/handShake/', function (req, res) {
     var salt = forge.random.getBytesSync(8);
     // var md = forge.md.sha1.create(); // "-md sha1"
     var derivedBytes = forge.pbe.opensslDeriveBytes(
-        keystore.service3DesPWD, salt, keystore.service3DesKey + keystore.service3DesIV/*, md*/);
-    
+        keystore.service3DesPWD, salt, keystore.service3DesKey + keystore.service3DesIV /*, md*/ );
+
     var buffer = forge.util.createBuffer(derivedBytes);
     var key = buffer.getBytes(keystore.service3DesKey);
     var iv = buffer.getBytes(keystore.service3DesIV);
-  
+
     var cipher = forge.cipher.createCipher('3DES-CBC', key);
-    cipher.start({iv: iv});
+    cipher.start({
+        iv: iv
+    });
     cipher.update(forge.util.createBuffer(data, 'binary'));
     cipher.finish();
-  
+
     var output = forge.util.createBuffer();
-  
+
     // if using a salt, prepend this to the output:
-    if(salt !== null) {
-      output.putBytes('Salted__'); // (add to match openssl tool output)
-      output.putBytes(salt);
+    if (salt !== null) {
+        output.putBytes('Salted__'); // (add to match openssl tool output)
+        output.putBytes(salt);
     }
     output.putBuffer(cipher.output);
-    var cypher =  output.getBytes();
+    var cypher = output.getBytes();
 
     console.log(cypher);
-    
+
     res.send(cypher);
 });
 
@@ -259,13 +261,32 @@ app.post('/save', function (req, res) {
 
 //load img adn data
 app.post('/node/fintechShare/secure/load/', function (req, res) {
-    var chipher = req.body;
-    var cypher = Object.keys(chipher);
-    console.info("cypher load : " + cypher);
-    var buf = Buffer.from(cypher, 'base64');
-    console.info("cypher byte : " + buf);
-    console.log(pki.keystore.privateKey);
-    var data = keystore.privateKey.decrypt(buf, 'RSA-OAEP');
+    var chipher = req.body.cypher;
+
+    console.info("cypher load : " + JSON.stringify(req.body));
+
+    var input = forge.util.createBuffer(chipher, 'binary');
+    // skip "Salted__" (if known to be present)
+    input.getBytes('Salted__'.length);
+    // read 8-byte salt
+    var salt = input.getBytes(8);
+
+    var derivedBytes = forge.pbe.opensslDeriveBytes(
+        keystore.service3DesPWD, salt, keystore.service3DesIV + keystore.service3DesKey);
+    var buffer = forge.util.createBuffer(derivedBytes);
+    var key = buffer.getBytes(keystore.service3DesKey);
+    var iv = buffer.getBytes(keystore.service3DesIV);
+
+    var decipher = forge.cipher.createDecipher('3DES-CBC', key);
+    decipher.start({
+        iv: iv
+    });
+    decipher.update(input);
+    var result = decipher.finish();
+
+    console.log("decrypted data : "+decipher.output);
+    var data = decipher.output;
+
     shareModel.find({
         "Ticket": data
     }, function (err, data) {
@@ -380,14 +401,43 @@ function findNowSpacific(getCollectionStock, res, start, end) {
                 htmlString = document.getElementsByTagName('html')[0].innerHTML;
             });
             htmlString.then(function () {
-                var chipher = PKservice.encrypt(htmlString, 'RSA-OAEP', {
+                console.log('html string : ' + htmlString);
+                var cypher ;/*= PKservice.encrypt(htmlString, 'RSA-OAEP', {
                     md: forge.md.sha256.create(),
                     mgf1: {
                         md: forge.md.sha1.create()
                     }
-                });
+                });*/
                 //res.render(doc);
-                res.send(chipher);
+                var salt = forge.random.getBytesSync(8);
+                // var md = forge.md.sha1.create(); // "-md sha1"
+                var derivedBytes = forge.pbe.opensslDeriveBytes(
+                    keystore.service3DesPWD, salt, keystore.service3DesKey + keystore.service3DesIV /*, md*/ );
+            
+                var buffer = forge.util.createBuffer(derivedBytes);
+                var key = buffer.getBytes(keystore.service3DesKey);
+                var iv = buffer.getBytes(keystore.service3DesIV);
+            
+                var cipher = forge.cipher.createCipher('3DES-CBC', key);
+                cipher.start({
+                    iv: iv
+                });
+                cipher.update(forge.util.createBuffer(htmlString, 'binary'));
+                cipher.finish();
+            
+                var output = forge.util.createBuffer();
+            
+                // if using a salt, prepend this to the output:
+                if (salt !== null) {
+                    output.putBytes('Salted__'); // (add to match openssl tool output)
+                    output.putBytes(salt);
+                }
+                output.putBuffer(cipher.output);
+                 cypher = output.getBytes();
+            
+                console.log(cypher);
+            
+                res.send(cypher);
             });
         }),
         function (err) {
