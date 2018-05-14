@@ -264,7 +264,7 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     var chipher = req.body.cypher;
 
     console.info("cypher load : " + chipher);
-    console.info(JSON.stringify(keystore));
+   // console.info(JSON.stringify(keystore));
     var input = forge.util.createBuffer(chipher, 'raw');
     // skip "Salted__" (if known to be present)
     input.getBytes('Salted__'.length);
@@ -284,8 +284,8 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     decipher.update(input);
     var result = decipher.finish();
 
-    console.log("decrypted data(form : "+input+") : "+decipher.output.toString('binary')+" status : "+ result+ "  byte of "+decipher.output.getBytes());
-    var data = decipher.output;
+    console.log("decrypted data"+decipher.output.getBytes());
+    var data = decipher.output.getBytes();
 
     shareModel.find({
         "Ticket": data
