@@ -47,11 +47,11 @@
 
 			for (var i = 0; i < file.length; i++) {
 				var datastring = file[i].Date;
-				var newDate = new Date(
+				var newDate = datastring;/* new Date(
 					parseInt(datastring.split("-")[0]),
 					parseInt(datastring.split("-")[1]),
 					parseInt(datastring.split("-")[2])
-				);
+				);*/
 				/*var datastring =  file[i].Date+"";
                     var year = datastring.substring(0,4);
                     var month = datastring.substring(4,6);
