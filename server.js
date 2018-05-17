@@ -453,7 +453,7 @@ function findNow(getCollectionStock, res) {
         }).limit(50)
         .then(function (doc) {
             for (var i = 0; i < doc.length;i++){
-                doc[i].Date = doc[i].Date.toString();
+                doc[i].Date = doc[i].Date.format('dd-M-yyyy');
             }
             console.log(" data form DB is " + doc + "instance of "+ typeof doc );
 
