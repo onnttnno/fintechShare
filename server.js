@@ -451,9 +451,9 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
 function findNow(getCollectionStock, res) {
     getCollectionStock.find({}).select({
             "_id": 0
-        })
+        }).limit(50)
         .then(function (doc) {            
-            //console.log(" data form DB is " + doc.length + " instance of " + typeof doc);
+            console.log(" data form DB is " + doc + " instance of " + typeof doc);
             res.render('candlechart', {
                 items: doc
             });
