@@ -47,40 +47,12 @@
 
 			for (var i = 0; i < file.length; i++) {
 				var datastring = file[i].Date;
-				var newDate =  file[i].Date/*new Date(
+				var newDate =  file[i].Date;/*new Date(
 					parseInt(datastring.split("-")[0]),
 					parseInt(datastring.split("-")[1]),
 					parseInt(datastring.split("-")[2])
 				);*/
-				/*var datastring =  file[i].Date+"";
-                    var year = datastring.substring(0,4);
-                    var month = datastring.substring(4,6);
-                    var day = datastring.substring(6,8);
 
-                    var newDate = new Date(year, month-1, day);
-                 
-					/*var newDate = new Date(firstDate);
-
-					newDate.setDate(newDate.getDate() + i);
-
-					var open = Math.round(Math.random() * (30) + 100);
-					var close = open + Math.round(Math.random() * (15) - Math.random() * 10);
-
-					var low;
-					if (open < close) {
-						low = open - Math.round(Math.random() * 5);
-					} else {
-						low = close - Math.round(Math.random() * 5);
-					}
-
-					var high;
-					if (open < close) {
-						high = close + Math.round(Math.random() * 5);
-					} else {
-						high = open + Math.round(Math.random() * 5);
-					}
-
-					var volume = Math.round(Math.random() * (1000 + i)) + 100 + i;*/
 
 				var value = Math.round(Math.random() * (30) + 100);
 
