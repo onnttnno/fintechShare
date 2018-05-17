@@ -452,10 +452,9 @@ function findNow(getCollectionStock, res) {
             "_id": 0
         }).limit(50)
         .then(function (doc) {
-            var data ;
-            /*for (var i = 0; i < data.length;i++){
-                data[i].Date = data[i].Date.toString();
-            }*/
+            for (var i = 0; i < doc.length;i++){
+                doc[i].Date = doc[i].Date.toString();
+            }
             console.log(" data form DB is " + doc + "instance of "+ typeof doc );
 
             res.render('candlechart', {
