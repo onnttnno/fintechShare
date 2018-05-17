@@ -456,7 +456,7 @@ function findNow(getCollectionStock, res) {
             /*for (var i = 0; i < data.length;i++){
                 data[i].Date = data[i].Date.toString();
             }*/
-            console.log(" data form DB is " + data + "instance of "+ typeof data );
+            console.log(" data form DB is " + doc + "instance of "+ typeof doc );
 
             res.render('candlechart', {
                 items: doc
