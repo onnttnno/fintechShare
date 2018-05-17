@@ -458,7 +458,7 @@ function findNow(getCollectionStock, res) {
             for (step = 0; step < doc.length; step++) {
                 // Runs 5 times, with values of step 0 through 4.
                 console.log(strp+' data : '+doc[step]);
-                doc[step].Date = doc[step].Date.getFullYear() + "-"+ doc[step].Date.getMonth()+"-"+doc[step].Date.getDay();
+                doc[step].Date = doc[step].Date.getDay()+ "-" +doc[step].Date.getMonth()+ "-" + doc[step].Date.getFullYear();
             }
 
             console.log(" data form DB is " + doc.length + " instance of " + typeof doc);
