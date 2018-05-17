@@ -452,7 +452,7 @@ function findNow(getCollectionStock, res) {
             "_id": 0
         }).limit(50)
         .then(function (doc) {
-            console.log(" data form DB is " + doc[0] + " instance of "+ typeof doc );
+            console.log(" data form DB is " + doc.length + " instance of "+ typeof doc );
             res.render('candlechart', {
                 items: doc
             });
