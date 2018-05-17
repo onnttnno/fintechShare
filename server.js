@@ -453,7 +453,7 @@ function findNow(getCollectionStock, res) {
             "_id": 0
         })
         .then(function (doc) {
-            doc.Date = doc.Date.toDateString()
+            doc.Date = doc.Date.toDateString();
 
             console.log(" data form DB is " + doc.length + " instance of " + typeof doc);
             res.render('candlechart', {
