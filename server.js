@@ -232,7 +232,7 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     var chipher = req.body.cypher;
 
     console.info("cypher load : " + chipher);
-   // console.info(JSON.stringify(keystore));
+    // console.info(JSON.stringify(keystore));
     var input = forge.util.createBuffer(chipher, 'raw');
     // skip "Salted__" (if known to be present)
     input.getBytes('Salted__'.length);
@@ -252,7 +252,7 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     decipher.update(input);
     var result = decipher.finish();
 
-    console.log("decrypted data"+decipher.output.getBytes());
+    console.log("decrypted data" + decipher.output.getBytes());
     var ticket = decipher.output.getBytes();
 
     shareModel.find({
@@ -261,7 +261,7 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
         if (err) return res.status(400).send('Error not found data in DB: ' + err);
         // Prints "Space Ghost is a talk show host".
         else {
-            console.log("Object here : "+JSON.stringify( data));
+            console.log("Object here : " + JSON.stringify(data));
             /*jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
             update(data).
             final().
@@ -310,7 +310,7 @@ app.listen(process.env.PORT, () => console.log('Example app listening on port ' 
 //open shared data
 app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
 
-    console.log("param : "+req.param.cypher);
+    console.log("param : " + req.param.cypher);
 
     shareModel.find({
         Ticket: req.param.cypher
@@ -353,7 +353,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             "_id": 0
         }).where('Date').gt(start).lt(end)
         .then(function (doc) {
-            console.log('data model: '+JSON.stringify(doc));
+            console.log('data model: ' + JSON.stringify(doc));
             //res.render('candlechart', { items: doc });
             //res.send(doc);
             /* jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
@@ -372,41 +372,42 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             });
             htmlString.then(function () {
                 console.log('html string : ' + htmlString);
-                var cypher ;/*= PKservice.encrypt(htmlString, 'RSA-OAEP', {
-                    md: forge.md.sha256.create(),
-                    mgf1: {
-                        md: forge.md.sha1.create()
-                    }
-                });*/
+                var cypher;
+                /*= PKservice.encrypt(htmlString, 'RSA-OAEP', {
+                                    md: forge.md.sha256.create(),
+                                    mgf1: {
+                                        md: forge.md.sha1.create()
+                                    }
+                                });*/
                 //res.render(doc);
                 var salt = forge.random.getBytesSync(8);
                 // var md = forge.md.sha1.create(); // "-md sha1"
                 var derivedBytes = forge.pbe.opensslDeriveBytes(
                     keystore.service3DesPWD, salt, keystore.service3DesKey + keystore.service3DesIV /*, md*/ );
-            
+
                 var buffer = forge.util.createBuffer(derivedBytes);
                 var key = buffer.getBytes(keystore.service3DesKey);
                 var iv = buffer.getBytes(keystore.service3DesIV);
-            
+
                 var cipher = forge.cipher.createCipher('3DES-CBC', key);
                 cipher.start({
                     iv: iv
                 });
                 cipher.update(forge.util.createBuffer(htmlString, 'binary'));
                 cipher.finish();
-            
+
                 var output = forge.util.createBuffer();
-            
+
                 // if using a salt, prepend this to the output:
                 if (salt !== null) {
                     output.putBytes('Salted__'); // (add to match openssl tool output)
                     output.putBytes(salt);
                 }
                 output.putBuffer(cipher.output);
-                 cypher = output.getBytes();
-            
+                cypher = output.getBytes();
+
                 console.log(cypher);
-            
+
                 res.send(cypher);
             });
         }),
@@ -450,9 +451,17 @@ app.get('/node/fintechShare/secure/:tickerurl', (req, res, next) => {
 function findNow(getCollectionStock, res) {
     getCollectionStock.find({}).select({
             "_id": 0
-        }).limit(50)
+        })
         .then(function (doc) {
-            console.log(" data form DB is " + doc.length + " instance of "+ typeof doc );
+
+            var step;
+            for (step = 0; step < doc.length; step++) {
+                // Runs 5 times, with values of step 0 through 4.
+                console.log(strp+' data : '+doc[step]);
+                doc[step].Date = doc[step].Date.getFullYear() + "-"+ doc[step].Date.getMonth()+"-"+doc[step].Date.getDay();
+            }
+
+            console.log(" data form DB is " + doc.length + " instance of " + typeof doc);
             res.render('candlechart', {
                 items: doc
             });
@@ -481,8 +490,8 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
     var myData = {
         Ticket: guid(),
         NameTicker: ('body: ', req.body.ticker),
-        StartDate: new Date( ('body: ', req.body.startDateInput)),
-        EndDate: new Date( ('body: ', req.body.endDateInput)),
+        StartDate: new Date(('body: ', req.body.startDateInput)),
+        EndDate: new Date(('body: ', req.body.endDateInput)),
         DataImage: ('body: ', req.body.img)
     }
 
