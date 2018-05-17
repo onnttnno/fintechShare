@@ -310,10 +310,12 @@ app.listen(process.env.PORT, () => console.log('Example app listening on port ' 
 //open shared data
 app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
 
-    var cypher = req.params.cypher;
-    jose.JWE.createDecrypt(keystore.get('ServerKey')).
-    decrypt(cypher).
-    then(function (data) {
+    console.log("param : "+req.param.cypher);
+
+    shareModel.find({
+        Ticket: req.param.cypher
+    }, function (err, data) {
+
         let start = data.StartDate;
         let end = data.EndDate;
         let ticker = data.ticker;
@@ -450,6 +452,10 @@ function findNow(getCollectionStock, res) {
             "_id": 0
         }).limit(50)
         .then(function (doc) {
+            var data ;
+            for (var i = 0; i < data.length;i++){
+                data[i].Date = data[i].Date.toString();
+            }
 
             res.render('candlechart', {
                 items: doc
@@ -493,7 +499,7 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
             postCollectionStock = new shareModel(myData).save()
                 .then(item => {
                     console.log('Item inserted');
-                    console.log("triket: " + item.Ticket);
+                    console.log("triket: " + item);
                     res.send(item.Ticket);
 
 
