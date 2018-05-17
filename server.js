@@ -453,13 +453,7 @@ function findNow(getCollectionStock, res) {
             "_id": 0
         })
         .then(function (doc) {
-
-            var step;
-            for (step = 0; step < doc.length; step++) {
-                // Runs 5 times, with values of step 0 through 4.
-                console.log(strp+' data : '+doc[step]);
-                doc[step].Date = doc[step].Date.getDay()+ "-" +doc[step].Date.getMonth()+ "-" + doc[step].Date.getFullYear();
-            }
+            doc.Date = doc.Date.toDateString()
 
             console.log(" data form DB is " + doc.length + " instance of " + typeof doc);
             res.render('candlechart', {
