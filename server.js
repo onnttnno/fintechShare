@@ -452,10 +452,8 @@ function findNow(getCollectionStock, res) {
     getCollectionStock.find({}).select({
             "_id": 0
         })
-        .then(function (doc) {
-            doc[0].Date = doc[0].Date.toString();
-
-            console.log(" data form DB is " + doc.length + " instance of " + typeof doc);
+        .then(function (doc) {            
+            //console.log(" data form DB is " + doc.length + " instance of " + typeof doc);
             res.render('candlechart', {
                 items: doc
             });
