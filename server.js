@@ -296,6 +296,8 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
                     findNowSpacific(getCollectionStock, res, start, end);
                     break;
                 default:
+                    console.log("stock name not found");
+                    res.status(404);
                     break;
             }
 
@@ -341,6 +343,8 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
                 findNowSpacific(getCollectionStock, res, start, end);
                 break;
             default:
+                console.log("stock name not found "+ticker);
+                res.status(404);
                 break;
         }
     });
@@ -350,18 +354,18 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
 function fillterdata(doc, start, end) {
 
     var data = [];
-    
+
     for (i = 0; i < doc.length; i++) {
         var fDate, lDate, cDate;
 
         fDate = Date.parse(start);
         lDate = Date.parse(end);
         cDate = Date.parse(doc[i].Date);
-        console.log("convert string to date "+i+ " start at : "+ fDate+ " end at : "+ " curent date : "+cDate);
+        console.log("convert string to date " + i + " start at : " + fDate + " end at : " + " curent date : " + cDate);
         if ((cDate <= lDate && cDate >= fDate)) {
             data.push(doc[i]);
         }
-       
+
     }
     return data;
 
@@ -373,7 +377,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             "_id": 0
         })
         .then(function (doc) {
-            console.log("chart data : "+doc);
+            console.log("chart data : " + doc);
             //console.log('data model: ' + JSON.stringify(doc));
             //res.render('candlechart', { items: doc });
             //res.send(doc);
@@ -496,7 +500,7 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
     }
     //var guid = guid();
 
-    console.log(JSON.stringify( req.body));
+    console.log(JSON.stringify(req.body));
     var myData = {
         Ticket: guid(),
         NameTicker: ('body: ', req.body.ticker),
