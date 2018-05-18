@@ -316,11 +316,12 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
     shareModel.find({
         Ticket: req.params.cypher
     }, function (err, data) {
-        console.log("get framwoke data"+data);
-        data = JSON.parse(data);
-        let start = data.StartDate;
-        let end = data.EndDate;
-        let ticker = data.NameTicker;
+        
+        datas = JSON.parse(data);
+        console.log("get framwoke data"+datas.NameTicker);
+        let start = datas.StartDate;
+        let end = datas.EndDate;
+        let ticker = datas.NameTicker;
         console.log(ticker+"   " + end+"  "+start);
         var getCollectionStock;
         switch (ticker) {
