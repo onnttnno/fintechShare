@@ -313,11 +313,9 @@ app.listen(process.env.PORT, () => console.log('Example app listening on port ' 
 app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
 
     console.log("param : " + req.params.cypher);
-    shareModel.find({
-        Ticket: req.params.cypher
-    }.select({
-        "_id": 0,"DataImage":0
-    }), function (err, data) {
+    shareModel.find({Ticket: req.params.cypher}).select({
+        "_id": 0 ,"DataImage": 0
+    }).then(function(data){
         console.log("get framwoke data "+ typeof data+"  "+ data);
         let start = data.StartDate;
         let end = data.EndDate;
