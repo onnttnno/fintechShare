@@ -318,7 +318,8 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
     }, function (err, data) {
         
         datas = JSON.parse(data);
-        console.log("get framwoke data"+datas.NameTicker);
+        console.log("1 get framwoke data"+datas.NameTicker);
+        console.log("2 get framwoke data"+data.NameTicker);
         let start = datas.StartDate;
         let end = datas.EndDate;
         let ticker = datas.NameTicker;
