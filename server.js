@@ -358,7 +358,7 @@ function fillterdata(doc, start, end) {
         fDate = Date.parse(start);
         lDate = Date.parse(end);
         cDate = Date.parse(doc[i].Date);
-
+        console.log("convert string to date "+i+ " start at : "+ fDate+ " end at : "+ " curent date : "+cDate);
         if ((cDate <= lDate && cDate >= fDate)) {
             data.push(doc[i]);
         }
@@ -374,7 +374,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             "_id": 0
         })
         .then(function (doc) {
-            console.log('data model: ' + JSON.stringify(doc));
+            //console.log('data model: ' + JSON.stringify(doc));
             //res.render('candlechart', { items: doc });
             //res.send(doc);
             /* jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
@@ -386,6 +386,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
              });*/
             //res.send(doc);//may be ...
             var dat = fillterdata(doc, start, end);
+            console.log(JSON.stringify(dat));
             var templet = ejs.render('candlechart', {
                 items: dat
             });
