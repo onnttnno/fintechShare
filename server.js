@@ -506,10 +506,10 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
     console.log(JSON.stringify(req.body));
     var myData = {
         Ticket: guid(),
-        NameTicker: ('body: ', req.body.ticker),
-        StartDate: ('body: ', req.body.startDateInput),
-        EndDate: ('body: ', req.body.endDateInput),
-        DataImage: ('body: ', req.body.img)
+        NameTicker: req.body.ticker,
+        StartDate:  req.body.startDateInput,
+        EndDate: req.body.endDateInput,
+        DataImage: req.body.img
     }
 
     switch (postTickerURL) {
