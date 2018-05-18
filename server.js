@@ -315,7 +315,9 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
     console.log("param : " + req.params.cypher);
     shareModel.find({
         Ticket: req.params.cypher
-    }, function (err, data) {
+    }.select({
+        "_id": 0,"DataImage":0
+    }), function (err, data) {
         console.log("get framwoke data "+ typeof data+"  "+ data);
         let start = data.StartDate;
         let end = data.EndDate;
