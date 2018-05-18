@@ -310,10 +310,10 @@ app.listen(process.env.PORT, () => console.log('Example app listening on port ' 
 //open shared data
 app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
 
-    console.log("param : " + req.param.cypher);
-
+    console.log("param : " + req.params.cypher);
+    console.log("param : " + req.params);
     shareModel.find({
-        Ticket: req.param.cypher
+        Ticket: req.params.cypher
     }, function (err, data) {
 
         let start = data.StartDate;
