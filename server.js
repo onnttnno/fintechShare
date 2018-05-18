@@ -498,8 +498,8 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
     var myData = {
         Ticket: guid(),
         NameTicker: ('body: ', req.body.ticker),
-        StartDate: new Date(('body: ', req.body.startDateInput)),
-        EndDate: new Date(('body: ', req.body.endDateInput)),
+        StartDate: ('body: ', req.body.startDateInput),
+        EndDate: ('body: ', req.body.endDateInput),
         DataImage: ('body: ', req.body.img)
     }
 
