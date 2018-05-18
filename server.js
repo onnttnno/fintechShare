@@ -317,7 +317,7 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
         "_id": 0 ,"DataImage": 0
     }).then(function(data){
         console.log("get framwoke data "+ typeof data+"  "+ data);
-        var x = JSON.parse(data);
+        var x = JSON.stringify(data);
         console.log("get framwoke data "+ typeof x+"  "+ x.NameTicker);
         let start = data.StartDate;
         let end = data.EndDate;
