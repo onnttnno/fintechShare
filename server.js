@@ -494,6 +494,7 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
     }
     //var guid = guid();
 
+    console.log(JSON.stringify( req.body));
     var myData = {
         Ticket: guid(),
         NameTicker: ('body: ', req.body.ticker),
