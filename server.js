@@ -316,9 +316,7 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
     shareModel.find({Ticket: req.params.cypher}).select({
         "_id": 0 ,"DataImage": 0
     }).then(function(data){
-        console.log("get framwoke data "+ typeof data+"  "+ data);
-        var x = JSON.stringify(data);
-        console.log("get framwoke data "+ typeof x+"  "+ x.NameTicker);
+        console.log("get framwoke data "+ typeof data+"  "+ data+" instance of JSON: "+data instanceof JSON);
         var start = data.StartDate;
         var end = data.EndDate;
         var ticker = data.NameTicker;
