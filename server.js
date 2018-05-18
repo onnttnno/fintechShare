@@ -319,7 +319,7 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
         let start = data.StartDate;
         let end = data.EndDate;
         let ticker = data.NameTicker;
-
+        console.log(ticker+"   " + end+"  "+start);
         var getCollectionStock;
         switch (ticker) {
             case "PTT":
