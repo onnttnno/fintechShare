@@ -314,7 +314,6 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
     shareModel.find({
         Ticket: req.params.cypher
     }, function (err, data) {
-        console.log("data form DB : "+JSON.stringify(data));
         let start = data.StartDate;
         let end = data.EndDate;
         let ticker = data.ticker;
@@ -374,6 +373,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             "_id": 0
         })
         .then(function (doc) {
+            console.log("chart data : "+doc);
             //console.log('data model: ' + JSON.stringify(doc));
             //res.render('candlechart', { items: doc });
             //res.send(doc);
@@ -387,6 +387,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             //res.send(doc);//may be ...
             var dat = fillterdata(doc, start, end);
             console.log(JSON.stringify(dat));
+            
             var templet = ejs.render('candlechart', {
                 items: dat
             });
