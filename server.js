@@ -348,10 +348,32 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
     });
 });
 
+//fillter data 
+function fillterdata(doc, start, end) {
+
+    var data = [];
+    
+    for (i = 0; i < doc.length; i++) {
+        var fDate, lDate, cDate;
+
+        fDate = Date.parse(start);
+        lDate = Date.parse(end);
+        cDate = Date.parse(doc[i].Date);
+
+        if ((cDate <= lDate && cDate >= fDate)) {
+            data.push(doc[i]);
+        }
+       
+    }
+    return data;
+
+}
+
+
 function findNowSpacific(getCollectionStock, res, start, end) {
     getCollectionStock.find({}).select({
             "_id": 0
-        }).where('Date').gt(start).lt(end)
+        })
         .then(function (doc) {
             console.log('data model: ' + JSON.stringify(doc));
             //res.render('candlechart', { items: doc });
@@ -364,51 +386,45 @@ function findNowSpacific(getCollectionStock, res, start, end) {
                  res.send(res);
              });*/
             //res.send(doc);//may be ...
+            var dat = fillterdata(doc, start, end);
             var templet = ejs.render('candlechart', {
-                items: doc
+                items: dat
             });
             var htmlString = templet.then(function () {
                 htmlString = document.getElementsByTagName('html')[0].innerHTML;
             });
             htmlString.then(function () {
                 console.log('html string : ' + htmlString);
-                var cypher;
-                /*= PKservice.encrypt(htmlString, 'RSA-OAEP', {
-                                    md: forge.md.sha256.create(),
-                                    mgf1: {
-                                        md: forge.md.sha1.create()
-                                    }
-                                });*/
-                //res.render(doc);
-                var salt = forge.random.getBytesSync(8);
-                // var md = forge.md.sha1.create(); // "-md sha1"
-                var derivedBytes = forge.pbe.opensslDeriveBytes(
-                    keystore.service3DesPWD, salt, keystore.service3DesKey + keystore.service3DesIV /*, md*/ );
+                /*  var cypher;
+                  var salt = forge.random.getBytesSync(8);
+                  // var md = forge.md.sha1.create(); // "-md sha1"
+                  var derivedBytes = forge.pbe.opensslDeriveBytes(
+                      keystore.service3DesPWD, salt, keystore.service3DesKey + keystore.service3DesIV  );
 
-                var buffer = forge.util.createBuffer(derivedBytes);
-                var key = buffer.getBytes(keystore.service3DesKey);
-                var iv = buffer.getBytes(keystore.service3DesIV);
+                  var buffer = forge.util.createBuffer(derivedBytes);
+                  var key = buffer.getBytes(keystore.service3DesKey);
+                  var iv = buffer.getBytes(keystore.service3DesIV);
 
-                var cipher = forge.cipher.createCipher('3DES-CBC', key);
-                cipher.start({
-                    iv: iv
-                });
-                cipher.update(forge.util.createBuffer(htmlString, 'binary'));
-                cipher.finish();
+                  var cipher = forge.cipher.createCipher('3DES-CBC', key);
+                  cipher.start({
+                      iv: iv
+                  });
+                  cipher.update(forge.util.createBuffer(htmlString, 'binary'));
+                  cipher.finish();
 
-                var output = forge.util.createBuffer();
+                  var output = forge.util.createBuffer();
 
-                // if using a salt, prepend this to the output:
-                if (salt !== null) {
-                    output.putBytes('Salted__'); // (add to match openssl tool output)
-                    output.putBytes(salt);
-                }
-                output.putBuffer(cipher.output);
-                cypher = output.getBytes();
+                  
+                  if (salt !== null) {
+                      output.putBytes('Salted__'); 
+                      output.putBytes(salt);
+                  }
+                  output.putBuffer(cipher.output);
+                  cypher = output.getBytes();
 
-                console.log(cypher);
-
-                res.send(cypher);
+                  console.log(cypher);
+                  */
+                res.send(htmlString);
             });
         }),
         function (err) {
@@ -452,7 +468,7 @@ function findNow(getCollectionStock, res) {
     getCollectionStock.find({}).select({
             "_id": 0
         }).limit(50)
-        .then(function (doc) {            
+        .then(function (doc) {
             console.log(" data form DB is " + doc + " instance of " + typeof doc);
             res.render('candlechart', {
                 items: doc
