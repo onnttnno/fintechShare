@@ -275,23 +275,23 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
 
             var getCollectionStock;
             switch (ticker) {
-                case "ptt":
+                case "PTT":
                     getCollectionStock = pttModel;
                     findNowSpacific(getCollectionStock, res, start, end);
                     break;
-                case "cpall":
+                case "CPALL":
                     getCollectionStock = cpallModel;
                     findNowSpacific(getCollectionStock, res, start, end);
                     break;
-                case "dtac":
+                case "DTAC":
                     getCollectionStock = dtacModel;
                     findNowSpacific(getCollectionStock, res, start, end);
                     break;
-                case "aot":
+                case "AOT":
                     getCollectionStock = aotModel;
                     findNowSpacific(getCollectionStock, res, start, end);
                     break;
-                case "kbank":
+                case "KBANK":
                     getCollectionStock = kbankModel;
                     findNowSpacific(getCollectionStock, res, start, end);
                     break;
@@ -316,27 +316,27 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
     }, function (err, data) {
         let start = data.StartDate;
         let end = data.EndDate;
-        let ticker = data.ticker;
+        let ticker = data.NameTicker;
 
         var getCollectionStock;
         switch (ticker) {
-            case "ptt":
+            case "PTT":
                 getCollectionStock = pttModel;
                 findNowSpacific(getCollectionStock, res, start, end);
                 break;
-            case "cpall":
+            case "CPALL":
                 getCollectionStock = cpallModel;
                 findNowSpacific(getCollectionStock, res, start, end);
                 break;
-            case "dtac":
+            case "DTAC":
                 getCollectionStock = dtacModel;
                 findNowSpacific(getCollectionStock, res, start, end);
                 break;
-            case "aot":
+            case "AOT":
                 getCollectionStock = aotModel;
                 findNowSpacific(getCollectionStock, res, start, end);
                 break;
-            case "kbank":
+            case "KBANK":
                 getCollectionStock = kbankModel;
                 findNowSpacific(getCollectionStock, res, start, end);
                 break;
@@ -387,7 +387,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             //res.send(doc);//may be ...
             var dat = fillterdata(doc, start, end);
             console.log(JSON.stringify(dat));
-            
+
             var templet = ejs.render('candlechart', {
                 items: dat
             });
