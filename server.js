@@ -362,13 +362,17 @@ function fillterdata(doc, start, end) {
     fDate = new Date(start.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
     lDate = new Date(end.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
     for (i = 0; i < doc.length; i++) {
-
+        
         cDate = new Date(doc[i].Date);
+        console.log("Stage "+i);
+        console.log("start date : " + fDate);
+        console.log("End date : "+ lDate);
+        console.log("Current date : "+ cDate);
         if ((cDate <= lDate && cDate >= fDate)) {
             data.push(doc[i]);
             console.log(doc[i]);
         }else{
-            console.error("date : " +cDate +" is in "+ fDate +" and "+lDate);
+            console.error("date : " +cDate +" is not in "+ fDate +" and "+lDate);
         }
 
     }
@@ -380,7 +384,7 @@ function fillterdata(doc, start, end) {
 function findNowSpacific(getCollectionStock, res, start, end) {
     getCollectionStock.find({}).select({
             "_id": 0
-        }).limit(100)
+        })
         .then(function (doc) {
             console.log("chart data : " + doc);
             var dat = fillterdata(doc, start, end);
