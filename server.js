@@ -355,7 +355,7 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
 function fillterdata(doc, start, end) {
 
     var data = [];
-
+    console.log(start+"  and   "+ end);
     for (i = 0; i < doc.length; i++) {
         var fDate, lDate, cDate;
 
