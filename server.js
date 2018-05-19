@@ -359,10 +359,10 @@ function fillterdata(doc, start, end) {
     for (i = 0; i < doc.length; i++) {
         var fDate, lDate, cDate;
 
-        fDate = Date.parse(start);
-        lDate = Date.parse(end);
-        cDate = Date.parse(doc[i].Date);
-        console.log("convert string to date " + i + " start at : " + fDate + " end at : " + " curent date : " + cDate);
+        fDate = new Date(start);
+        lDate = new Date(end);
+        cDate = new Date(doc[i].Date);
+        console.log("convert string to date " + i + " start at : " + fDate + " end at : "+ lDate + " curent date : " + cDate);
         if ((cDate <= lDate && cDate >= fDate)) {
             data.push(doc[i]);
         }
@@ -379,17 +379,6 @@ function findNowSpacific(getCollectionStock, res, start, end) {
         })
         .then(function (doc) {
             console.log("chart data : " + doc);
-            //console.log('data model: ' + JSON.stringify(doc));
-            //res.render('candlechart', { items: doc });
-            //res.send(doc);
-            /* jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
-             update(doc).
-             final().
-             then(function (res) {
-                 // {result} is a JSON Object -- JWE using the JSON General Serialization
-                 res.send(res);
-             });*/
-            //res.send(doc);//may be ...
             var dat = fillterdata(doc, start, end);
             console.log(JSON.stringify(dat));
 
