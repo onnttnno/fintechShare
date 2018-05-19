@@ -367,6 +367,8 @@ function fillterdata(doc, start, end) {
         if ((cDate <= lDate && cDate >= fDate)) {
             data.push(doc[i]);
             console.log(doc[i]);
+        }else{
+            console.error("date : " +cDate +" is in "+ fDate +" and "+lDate);
         }
 
     }
@@ -378,7 +380,7 @@ function fillterdata(doc, start, end) {
 function findNowSpacific(getCollectionStock, res, start, end) {
     getCollectionStock.find({}).select({
             "_id": 0
-        })
+        }).limit(100)
         .then(function (doc) {
             console.log("chart data : " + doc);
             var dat = fillterdata(doc, start, end);
