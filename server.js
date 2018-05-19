@@ -362,7 +362,7 @@ function fillterdata(doc, start, end) {
 
     fDate = new Date(start.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
     lDate = new Date(end.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
-    console.log(fDate+" and  "+ldate);
+    console.log(fDate+" and  "+lDate);
     for (i = 0; i < doc.length; i++) {
 
         cDate = new Date(doc[i].Date);
