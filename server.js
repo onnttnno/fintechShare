@@ -314,12 +314,12 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
 
     console.log("param : " + req.params.cypher);
     shareModel.find({Ticket: req.params.cypher}).select({
-        "_id": 0 ,"DataImage": 0
+        "_id": 0 
     }).then(function(data){
         console.log("get framwoke data "+ typeof data+"  "+ data[0].NameTicker);
-        var start = data.StartDate;
-        var end = data.EndDate;
-        var ticker = data.NameTicker;
+        var start = data[0].StartDate;
+        var end = data[0].EndDate;
+        var ticker = data[0].NameTicker;
         console.log(ticker+"   " + end+"  "+start);
         var getCollectionStock;
         switch (ticker) {
