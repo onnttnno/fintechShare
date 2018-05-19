@@ -313,14 +313,16 @@ app.listen(process.env.PORT, () => console.log('Example app listening on port ' 
 app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
 
     console.log("param : " + req.params.cypher);
-    shareModel.find({Ticket: req.params.cypher}).select({
-        "_id": 0 
-    }).then(function(data){
-        console.log("get framwoke data "+ typeof data+"  "+ data[0].NameTicker);
+    shareModel.find({
+        Ticket: req.params.cypher
+    }).select({
+        "_id": 0
+    }).then(function (data) {
+        console.log("get framwoke data " + typeof data + "  " + data[0].NameTicker);
         var start = data[0].StartDate;
         var end = data[0].EndDate;
         var ticker = data[0].NameTicker;
-        console.log(ticker+"   " + end+"  "+start);
+        console.log(ticker + "   " + end + "  " + start);
         var getCollectionStock;
         switch (ticker) {
             case "PTT":
@@ -344,7 +346,7 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
                 findNowSpacific(getCollectionStock, res, start, end);
                 break;
             default:
-                console.log("stock name not found "+ticker);
+                console.log("stock name not found " + ticker);
                 res.status(404);
                 break;
         }
@@ -355,14 +357,16 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
 function fillterdata(doc, start, end) {
 
     var data = [];
-    console.log(start+"  and   "+ end);
-    for (i = 0; i < doc.length; i++) {
-        var fDate, lDate, cDate;
+    console.log(start + "  and   " + end);
+    var fDate, lDate, cDate;
 
-        fDate = new Date(start);
-        lDate = new Date(end);
+    fDate = new Date(start.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
+    lDate = new Date(end.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
+    console.log(fDate+" and  "+ldate);
+    for (i = 0; i < doc.length; i++) {
+
         cDate = new Date(doc[i].Date);
-        console.log("convert string to date " + i + " start at : " + fDate + " end at : "+ lDate + " curent date : " + cDate);
+        console.log("convert string to date " + i + " start at : " + fDate + " end at : " + lDate + " curent date : " + cDate);
         if ((cDate <= lDate && cDate >= fDate)) {
             data.push(doc[i]);
         }
@@ -376,7 +380,7 @@ function fillterdata(doc, start, end) {
 function findNowSpacific(getCollectionStock, res, start, end) {
     getCollectionStock.find({}).select({
             "_id": 0
-        })
+        }).limit(50)
         .then(function (doc) {
             console.log("chart data : " + doc);
             var dat = fillterdata(doc, start, end);
@@ -494,7 +498,7 @@ app.post('/node/fintechShare/secure/:tickerurl', function (req, res) {
     var myData = {
         Ticket: guid(),
         NameTicker: req.body.ticker,
-        StartDate:  req.body.startDateInput,
+        StartDate: req.body.startDateInput,
         EndDate: req.body.endDateInput,
         DataImage: req.body.img
     }
