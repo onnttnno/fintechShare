@@ -356,7 +356,7 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
 //fillter data 
 function fillterdata(doc, start, end) {
 
-    var data = [];
+    var data;
     var fDate, lDate, cDate;
 
     fDate = new Date(start.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
@@ -378,7 +378,7 @@ function fillterdata(doc, start, end) {
 function findNowSpacific(getCollectionStock, res, start, end) {
     getCollectionStock.find({}).select({
             "_id": 0
-        }).limit(50)
+        })
         .then(function (doc) {
             console.log("chart data : " + doc);
             var dat = fillterdata(doc, start, end);
