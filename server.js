@@ -356,7 +356,7 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
 //fillter data 
 function fillterdata(doc, start, end) {
 
-    var data = {};
+    var data = [];
     var fDate, lDate, cDate;
 
     fDate = new Date(start.replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
@@ -367,7 +367,7 @@ function fillterdata(doc, start, end) {
         cDate = new Date(doc[i].Date);
         if ((cDate <= lDate) && (cDate >= fDate)) {
             //data[i].push(doc[i]);
-            data[[count]] = doc[i];
+            data.push(doc[i]);
             count++;
         }
 
@@ -389,9 +389,10 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             var file = fs.readFileSync(__dirname + '/views/candlechart.ejs', 'ascii');
             var htmlString = ejs.render(file,  {
                     items : dat
-                });
+                }
+            );
 
-           
+            console.log('html string : ' + htmlString);
             /*  var cypher;
               var salt = forge.random.getBytesSync(8);
               // var md = forge.md.sha1.create(); // "-md sha1"
@@ -421,14 +422,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
 
               console.log(cypher);
               */
-             ejs.renderFile(file, {
-                items : dat
-            }, function(err, str){
-                // str => Rendered HTML string
-                console.log('html string : ' + str);
-                res.send(str);
-            });
-           
+            res.send(htmlString);
 
         }),
         function (err) {
