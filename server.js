@@ -10,7 +10,7 @@ const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const path = require('path');
 const port = process.env.PORT || 3000;
-
+var fs = require('fs');
 //for encypt
 
 
@@ -356,19 +356,15 @@ app.get('/node/fintechShare/secure/open/:cypher', function (req, res) {
 //fillter data 
 function fillterdata(doc, start, end) {
 
-    var data={};
+    var data = {};
     var fDate, lDate, cDate;
 
-    fDate = new Date(start.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
-    lDate = new Date(end.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
+    fDate = new Date(start.replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
+    lDate = new Date(end.replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
     var count = 0;
     for (i = 0; i < doc.length; i++) {
-        
+
         cDate = new Date(doc[i].Date);
-        console.log("Stage "+i);
-        console.log("start date : " + fDate);
-        console.log("End date : "+ lDate);
-        console.log("Current date : "+ cDate);
         if ((cDate <= lDate) && (cDate >= fDate)) {
             //data[i].push(doc[i]);
             data[[count]] = doc[i];
@@ -389,46 +385,46 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             console.log("chart data : " + doc);
             var dat = fillterdata(doc, start, end);
             console.log(JSON.stringify(dat));
-            console.log("all data "+dat);
-            var templet = ejs.render('candlechart', {
-                items: dat
+            console.log("all data " + dat);
+            var file = fs.readFileSync(__dirname + 'views/candlechart.ejs', 'ascii');
+            var htmlString = ejs.render(file, {
+                locals: {
+                    items: dat
+                }
             });
-            var htmlString = templet.then(function () {
-                htmlString = document.getElementsByTagName('html')[0].innerHTML;
-            });
-            htmlString.then(function () {
-                console.log('html string : ' + htmlString);
-                /*  var cypher;
-                  var salt = forge.random.getBytesSync(8);
-                  // var md = forge.md.sha1.create(); // "-md sha1"
-                  var derivedBytes = forge.pbe.opensslDeriveBytes(
-                      keystore.service3DesPWD, salt, keystore.service3DesKey + keystore.service3DesIV  );
 
-                  var buffer = forge.util.createBuffer(derivedBytes);
-                  var key = buffer.getBytes(keystore.service3DesKey);
-                  var iv = buffer.getBytes(keystore.service3DesIV);
+            console.log('html string : ' + htmlString);
+            /*  var cypher;
+              var salt = forge.random.getBytesSync(8);
+              // var md = forge.md.sha1.create(); // "-md sha1"
+              var derivedBytes = forge.pbe.opensslDeriveBytes(
+                  keystore.service3DesPWD, salt, keystore.service3DesKey + keystore.service3DesIV  );
 
-                  var cipher = forge.cipher.createCipher('3DES-CBC', key);
-                  cipher.start({
-                      iv: iv
-                  });
-                  cipher.update(forge.util.createBuffer(htmlString, 'binary'));
-                  cipher.finish();
+              var buffer = forge.util.createBuffer(derivedBytes);
+              var key = buffer.getBytes(keystore.service3DesKey);
+              var iv = buffer.getBytes(keystore.service3DesIV);
 
-                  var output = forge.util.createBuffer();
+              var cipher = forge.cipher.createCipher('3DES-CBC', key);
+              cipher.start({
+                  iv: iv
+              });
+              cipher.update(forge.util.createBuffer(htmlString, 'binary'));
+              cipher.finish();
 
-                  
-                  if (salt !== null) {
-                      output.putBytes('Salted__'); 
-                      output.putBytes(salt);
-                  }
-                  output.putBuffer(cipher.output);
-                  cypher = output.getBytes();
+              var output = forge.util.createBuffer();
 
-                  console.log(cypher);
-                  */
-                res.send(htmlString);
-            });
+              
+              if (salt !== null) {
+                  output.putBytes('Salted__'); 
+                  output.putBytes(salt);
+              }
+              output.putBuffer(cipher.output);
+              cypher = output.getBytes();
+
+              console.log(cypher);
+              */
+            res.send(htmlString);
+
         }),
         function (err) {
             console.error("Error in find collection " + err);
