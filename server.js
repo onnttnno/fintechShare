@@ -5,7 +5,7 @@ const jose = require('node-jose');
 var https = require('https');
 const server = require('http').createServer(app);
 const serverHttps = https.createServer(app);
-
+const ejs = require('ejs');
 //= jose.JWK.createKeyStore();
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -368,12 +368,10 @@ function fillterdata(doc, start, end) {
         console.log("start date : " + fDate);
         console.log("End date : "+ lDate);
         console.log("Current date : "+ cDate);
-        if ((cDate <= lDate && cDate >= fDate)) {
+        if ((cDate <= lDate) && (cDate >= fDate)) {
             //data[i].push(doc[i]);
             console.log("Data is in date ");
             console.log("data in  this rang "+doc[i]);
-        }else{
-            console.error("date : " +cDate +" is not in "+ fDate +" and "+lDate);
         }
 
     }
