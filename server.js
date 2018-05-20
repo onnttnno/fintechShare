@@ -393,7 +393,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             );
 
             console.log('html string : ' + htmlString);
-            /*  var cypher;
+             var cypher;
               var salt = forge.random.getBytesSync(8);
               // var md = forge.md.sha1.create(); // "-md sha1"
               var derivedBytes = forge.pbe.opensslDeriveBytes(
@@ -421,8 +421,8 @@ function findNowSpacific(getCollectionStock, res, start, end) {
               cypher = output.getBytes();
 
               console.log(cypher);
-              */
-            res.send(htmlString);
+              
+            res.send(cypher);
 
         }),
         function (err) {
