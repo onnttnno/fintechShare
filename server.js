@@ -386,7 +386,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             var dat = fillterdata(doc, start, end);
             console.log(JSON.stringify(dat));
             console.log("all data " + dat);
-            var file = fs.readFileSync(__dirname + 'views/candlechart.ejs', 'ascii');
+            var file = fs.readFileSync(__dirname + '/views/candlechart.ejs', 'ascii');
             var htmlString = ejs.render(file, {
                 locals: {
                     items: dat
