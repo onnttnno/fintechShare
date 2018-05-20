@@ -370,7 +370,8 @@ function fillterdata(doc, start, end) {
         console.log("Current date : "+ cDate);
         if ((cDate <= lDate && cDate >= fDate)) {
             //data[i].push(doc[i]);
-            console.log(doc[i]);
+            console.log("Data is in date ");
+            console.log("data in  this rang "+doc[i]);
         }else{
             console.error("date : " +cDate +" is not in "+ fDate +" and "+lDate);
         }
