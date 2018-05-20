@@ -361,8 +361,9 @@ function fillterdata(doc, start, end) {
 
     fDate = new Date(start.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
     lDate = new Date(end.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
+    var count = 0;
     for (i = 0; i < doc.length; i++) {
-        var count =0;
+        
         cDate = new Date(doc[i].Date);
         console.log("Stage "+i);
         console.log("start date : " + fDate);
