@@ -391,7 +391,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
                     items : dat
                 });
 
-            console.log('html string : ' + htmlString);
+           
             /*  var cypher;
               var salt = forge.random.getBytesSync(8);
               // var md = forge.md.sha1.create(); // "-md sha1"
@@ -421,7 +421,12 @@ function findNowSpacific(getCollectionStock, res, start, end) {
 
               console.log(cypher);
               */
-            res.send(htmlString);
+             ejs.renderFile(__dirname + '/views/candlechart.ejs', dat, function(err, str){
+                // str => Rendered HTML string
+                console.log('html string : ' + str);
+                res.send(str);
+            });
+           
 
         }),
         function (err) {
