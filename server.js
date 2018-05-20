@@ -387,11 +387,9 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             console.log(JSON.stringify(dat));
             console.log("all data " + dat);
             var file = fs.readFileSync(__dirname + '/views/candlechart.ejs', 'ascii');
-            var htmlString = ejs.render(file, {
-                locals: {
-                    items: dat
-                }
-            });
+            var htmlString = ejs.render(file,  {
+                    items : dat
+                });
 
             console.log('html string : ' + htmlString);
             /*  var cypher;
