@@ -412,7 +412,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
               cipher.start({
                   iv: iv
               });
-              cipher.update(forge.util.createBuffer(htmlString, 'binary'));
+              cipher.update(forge.util.createBuffer(htmlString, 'raw'));
               cipher.finish();
 
               var output = forge.util.createBuffer();
