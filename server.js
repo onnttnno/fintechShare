@@ -252,16 +252,16 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     decipher.update(input);
     var result = decipher.finish();
 
-    console.log("decrypted data : " + decipher.output.getBytes());
+    console.log("decrypted data : " + decipher.output.getBytes().toString);
     var ticket = decipher.output.getBytes();
 
     shareModel.find({
-        Ticket:  decipher.output
+        Ticket:  ticket.toString()
     }).select({
         "_id": 0
     }).then(function (data) {
         // Prints "Space Ghost is a talk show host".
-        console.log("get framwoke data " + typeof data + "  " + data);
+        console.log("get framwoke data " + typeof data + "  is " + data);
         var start = data[0].StartDate;
         var end = data[0].EndDate;
         var ticker = data[0].NameTicker;
