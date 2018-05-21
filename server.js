@@ -411,7 +411,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             cipher.start({
                 iv: iv
             });
-            cipher.update(forge.util.createBuffer(Buffer.from(htmlString).toString('base64'), 'raw'));
+            cipher.update("test data encrypted"/*forge.util.createBuffer(Buffer.from(htmlString).toString('base64')*/, 'raw'));
             cipher.finish();
 
             var output = forge.util.createBuffer();
