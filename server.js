@@ -252,8 +252,8 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     decipher.update(input);
     var result = decipher.finish();
 
-    console.log("decrypted data : " + decipher.output.getBytes().toString());
-    var ticket = ""+decipher.output.getBytes();
+    console.log("decrypted data : " + decipher.output.toString());
+    var ticket =decipher.output.toString();
     console.log("ticket data : " + ticket+" type of " + typeof ticket);
     shareModel.find({
         Ticket:  ticket
