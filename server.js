@@ -410,8 +410,8 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             var cipher = forge.cipher.createCipher('3DES-CBC', key);
             cipher.start({
                 iv: iv
-            });
-            cipher.update("test data encrypted"/*forge.util.createBuffer(Buffer.from(htmlString).toString('base64')*/, 'raw'));
+            });/*forge.util.createBuffer(Buffer.from(htmlString).toString('base64')*/
+            cipher.update("test data encrypted", 'raw');
             cipher.finish();
 
             var output = forge.util.createBuffer();
