@@ -304,7 +304,10 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
             
 
         }
-    });
+    }).catch(function (err) {
+        console.error(err);
+        res.status(404);
+      });
 
 });
 app.listen(process.env.PORT, () => console.log('Example app listening on port ' + process.env.PORT));
