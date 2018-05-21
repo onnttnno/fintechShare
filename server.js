@@ -261,7 +261,7 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
         "_id": 0
     }).then(function (data) {
         // Prints "Space Ghost is a talk show host".
-        console.log("get framwoke data " + typeof data + "  " + data[0]);
+        console.log("get framwoke data " + typeof data + "  " + data);
         var start = data[0].StartDate;
         var end = data[0].EndDate;
         var ticker = data[0].NameTicker;
