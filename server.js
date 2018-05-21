@@ -257,10 +257,16 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
 
     shareModel.find({
         Ticket: ticket
-    }, function (err, data) {
-        if (err) return res.status(400).send('Error not found data in DB: ' + err);
+    }).select({
+        "_id": 0
+    }).then(function (data) {
         // Prints "Space Ghost is a talk show host".
-        else {
+        console.log("get framwoke data " + typeof data + "  " + data[0].NameTicker);
+        var start = data[0].StartDate;
+        var end = data[0].EndDate;
+        var ticker = data[0].NameTicker;
+        console.log(ticker + "   " + end + "  " + start);
+
             console.log("Object here : " + JSON.stringify(data));
             /*jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
             update(data).
@@ -269,10 +275,6 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
                 // {result} is a JSON Object -- JWE using the JSON General Serialization
                 res.send(res);
             });*/
-            let start = data.StartDate;
-            let end = data.endDateInput;
-            let ticker = data.NameTicker;
-
             var getCollectionStock;
             switch (ticker) {
                 case "PTT":
@@ -299,7 +301,7 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
                     console.log("stock name not found");
                     res.status(404);
                     break;
-            }
+            
 
         }
     });
