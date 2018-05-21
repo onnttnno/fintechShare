@@ -253,10 +253,10 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     var result = decipher.finish();
 
     console.log("decrypted data : " + decipher.output.toString());
-    var ticket =decipher.output.toString();
-    console.log("ticket data : " + ticket+" type of " + typeof ticket);
+    var ticket = decipher.output.toString();
+    console.log("ticket data : " + ticket + " type of " + typeof ticket);
     shareModel.find({
-        Ticket:  ticket
+        Ticket: ticket
     }).select({
         "_id": 0
     }).then(function (data) {
@@ -267,47 +267,47 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
         var ticker = data[0].NameTicker;
         console.log(ticker + "   " + end + "  " + start);
 
-            console.log("Object here : " + JSON.stringify(data));
-            /*jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
-            update(data).
-            final().
-            then(function (res) {
-                // {result} is a JSON Object -- JWE using the JSON General Serialization
-                res.send(res);
-            });*/
-            var getCollectionStock;
-            switch (ticker) {
-                case "PTT":
-                    getCollectionStock = pttModel;
-                    findNowSpacific(getCollectionStock, res, start, end);
-                    break;
-                case "CPALL":
-                    getCollectionStock = cpallModel;
-                    findNowSpacific(getCollectionStock, res, start, end);
-                    break;
-                case "DTAC":
-                    getCollectionStock = dtacModel;
-                    findNowSpacific(getCollectionStock, res, start, end);
-                    break;
-                case "AOT":
-                    getCollectionStock = aotModel;
-                    findNowSpacific(getCollectionStock, res, start, end);
-                    break;
-                case "KBANK":
-                    getCollectionStock = kbankModel;
-                    findNowSpacific(getCollectionStock, res, start, end);
-                    break;
-                default:
-                    console.log("stock name not found");
-                    res.status(404);
-                    break;
-            
+        console.log("Object here : " + JSON.stringify(data));
+        /*jose.JWE.createEncrypt(keystore.get('ServiceKeys')).
+        update(data).
+        final().
+        then(function (res) {
+            // {result} is a JSON Object -- JWE using the JSON General Serialization
+            res.send(res);
+        });*/
+        var getCollectionStock;
+        switch (ticker) {
+            case "PTT":
+                getCollectionStock = pttModel;
+                findNowSpacific(getCollectionStock, res, start, end);
+                break;
+            case "CPALL":
+                getCollectionStock = cpallModel;
+                findNowSpacific(getCollectionStock, res, start, end);
+                break;
+            case "DTAC":
+                getCollectionStock = dtacModel;
+                findNowSpacific(getCollectionStock, res, start, end);
+                break;
+            case "AOT":
+                getCollectionStock = aotModel;
+                findNowSpacific(getCollectionStock, res, start, end);
+                break;
+            case "KBANK":
+                getCollectionStock = kbankModel;
+                findNowSpacific(getCollectionStock, res, start, end);
+                break;
+            default:
+                console.log("stock name not found");
+                res.status(404);
+                break;
+
 
         }
     }).catch(function (err) {
         console.error(err);
         res.status(404);
-      });
+    });
 
 });
 app.listen(process.env.PORT, () => console.log('Example app listening on port ' + process.env.PORT));
@@ -392,41 +392,69 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             console.log(JSON.stringify(dat));
             console.log("all data " + dat);
             var file = fs.readFileSync(__dirname + '/views/candlechart.ejs', 'ascii');
-            var htmlString = ejs.render(file,  {
-                    items : dat
-                }
-            );
+            var htmlString = ejs.render(file, {
+                items: dat
+            });
 
             console.log('html string : ' + htmlString);
-             var cypher;
-              var salt = forge.random.getBytesSync(8);
-              // var md = forge.md.sha1.create(); // "-md sha1"
-              var derivedBytes = forge.pbe.opensslDeriveBytes(
-                  keystore.service3DesPWD, salt, keystore.service3DesKey + keystore.service3DesIV  );
+            var cypher;
+            var salt = forge.random.getBytesSync(8);
+            // var md = forge.md.sha1.create(); // "-md sha1"
+            var derivedBytes = forge.pbe.opensslDeriveBytes(
+                keystore.service3DesPWD, salt, keystore.service3DesKey + keystore.service3DesIV);
 
-              var buffer = forge.util.createBuffer(derivedBytes);
-              var key = buffer.getBytes(keystore.service3DesKey);
-              var iv = buffer.getBytes(keystore.service3DesIV);
+            var buffer = forge.util.createBuffer(derivedBytes);
+            var key = buffer.getBytes(keystore.service3DesKey);
+            var iv = buffer.getBytes(keystore.service3DesIV);
 
-              var cipher = forge.cipher.createCipher('3DES-CBC', key);
-              cipher.start({
-                  iv: iv
-              });
-              cipher.update(forge.util.createBuffer(htmlString, 'raw'));
-              cipher.finish();
+            var cipher = forge.cipher.createCipher('3DES-CBC', key);
+            cipher.start({
+                iv: iv
+            });
+            cipher.update(forge.util.createBuffer(htmlString, 'raw'));
+            cipher.finish();
 
-              var output = forge.util.createBuffer();
+            var output = forge.util.createBuffer();
 
-              
-              if (salt !== null) {
-                  output.putBytes('Salted__'); 
-                  output.putBytes(salt);
-              }
-              output.putBuffer(cipher.output);
-              cypher = output.getBytes();
 
-              console.log(cypher);
-              
+            if (salt !== null) {
+                output.putBytes('Salted__');
+                output.putBytes(salt);
+            }
+            output.putBuffer(cipher.output);
+            cypher = output.getBytes();
+
+            console.log(cypher);
+
+
+
+            // parse salt from input
+            input = forge.util.createBuffer(cypher, 'binary');
+            // skip "Salted__" (if known to be present)
+            input.getBytes('Salted__'.length);
+            // read 8-byte salt
+            var salt = input.getBytes(8);
+
+            // Note: if using "-nosalt", skip above parsing and use
+            // var salt = null;
+
+            // 3DES key and IV sizes
+            var keySize = 24;
+            var ivSize = 8;
+
+            var buffer = forge.util.createBuffer(derivedBytes);
+            var key = buffer.getBytes(keySize);
+            var iv = buffer.getBytes(ivSize);
+
+            var decipher = forge.cipher.createDecipher('3DES-CBC', key);
+            decipher.start({
+                iv: iv
+            });
+            decipher.update(input);
+            var result = decipher.finish(); // check 'result' for true/false
+
+            console.log("dencrypted is : " + decipher.output.getBytes());
+
             res.send(cypher);
 
         }),
