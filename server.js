@@ -232,6 +232,7 @@ app.post('/node/fintechShare/secure/load/', function (req, res) {
     var chipher = req.body.cypher;
 
     console.info("cypher load : " + chipher);
+    console.info("keystore  "+ JSON.stringify(keystore));
     // console.info(JSON.stringify(keystore));
     var input = forge.util.createBuffer(chipher, 'raw');
     // skip "Salted__" (if known to be present)
@@ -397,7 +398,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             });
 
             console.log('html string : ' + htmlString);
-            var cypher;
+           /* var cypher;
             var salt = forge.random.getBytesSync(8);
             // var md = forge.md.sha1.create(); // "-md sha1"
             var derivedBytes = forge.pbe.opensslDeriveBytes(
@@ -411,7 +412,7 @@ function findNowSpacific(getCollectionStock, res, start, end) {
             cipher.start({
                 iv: iv
             });
-            cipher.update(forge.util.createBuffer("test", 'raw'));
+            cipher.update(forge.util.createBuffer(htmlString, 'raw'));
             cipher.finish();
 
             var output = forge.util.createBuffer();
@@ -421,12 +422,13 @@ function findNowSpacific(getCollectionStock, res, start, end) {
                 output.putBytes('Salted__');
                 output.putBytes(salt);
             }
+
             output.putBuffer(cipher.output);
             cypher = output.toHex();
 
-            console.log(cypher);
+            console.log(cypher);*/
 
-            res.send(cypher);
+            res.send(htmlString);
 
         }),
         function (err) {
