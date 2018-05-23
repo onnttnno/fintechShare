@@ -482,7 +482,7 @@ if ( !AmCharts.translations[ "export" ][ "en" ] ) {
 					}
 				},
 				fabric: {
-					backgroundColor: "#FFFFFF",
+					backgroundColor: "#222222",
 					removeImages: true,
 					forceRemoveImages: false,
 					selection: false,
