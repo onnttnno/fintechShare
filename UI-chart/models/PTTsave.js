@@ -4,7 +4,7 @@ const chartSchema = new mongoose.Schema({
   StartDate : String, 
   EndDate : String,
   DataImage : String,
-  Ticket:String
+  Ticket : String
 });
 chartSchema.set('collection','PTTsave');
 

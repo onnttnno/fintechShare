@@ -6,6 +6,15 @@
     "configurations": [
         {
             "type": "node",
+            "request": "attach",
+            "name": "Attach to Remote",
+            "address": "http://110.164.179.154/",
+            "port": 9229,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/node/fintechShare/secure/"
+        },
+        {
+            "type": "node",
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}\\tes_my_tls\\clientSide.js"
