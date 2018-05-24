@@ -434,7 +434,6 @@
 			xmlhttp.onload = function () {
 				if (xmlhttp.readyState === xmlhttp.DONE) {
 					if (xmlhttp.status === 200) {
-						alert('save complete : ' + xmlhttp.response);
 						prompt("please press ctrl+c to copy the text below", xmlhttp.response)
 					}
 				}
